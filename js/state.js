@@ -4,7 +4,7 @@ export const state = {
         {
             id: "b1",
             name: "My Project",
-            column: [
+            columns: [
                 {
                     id: "c1",
                     title: "To Do",

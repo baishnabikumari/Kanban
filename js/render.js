@@ -1,10 +1,10 @@
-import { getActiveBoard } from "./state";
+import { getActiveBoard } from "./state.js";
 const boardEl = document.getElementById("board");
 
 export function render(){
     const board = getActiveBoard();
     boardEl.innerHTML = "";
-    board.column.forEach(column => {
+    board.columns.forEach(column => {
         boardEl.appendChild(renderColumn(column));
     });
     const addColumnBtn = document.createElement("button");
@@ -29,12 +29,14 @@ function renderColumn(column){
 
     header.appendChild(titleEl);
     header.appendChild(countEl);
-    header.appendChild(header);
+    columnEl.appendChild(header);
 
     const cardList = document.createElement("div");
     cardList.className = "card-list";
-    column.cards.forEach(card => cardList.appendChild.appendChild(renderCard(card)));
+    column.cards.forEach(card => cardList.appendChild(renderCard(card)));
+    columnEl.appendChild(cardList);
     const addCardBtn = document.createElement("button");
+
     addCardBtn.className = "add-card-btn";
     addCardBtn.textContent = "+ add card";
     columnEl.appendChild(addCardBtn);
