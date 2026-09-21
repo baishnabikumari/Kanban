@@ -12,7 +12,48 @@
     <header class="app-header">
         <h1>Kanban</h1>
     </header>
-    <main id="board" class="board"></main>
+    <main id="board" class="board">
+        <div class="column">
+            <div class="column-header">
+                <h2>To Do?</h2>
+                <span class="card-count">3</span>
+            </div>
+            <div class="card-list">
+                <div class="card">Fix login bug on mobile</div>
+                <div class="card">Write unit test for auth mobile</div>
+                <div class="card">Update favicon</div>
+            </div>
+
+            <button class="add-card-btn">+ add card</button>
+        </div>
+
+        <div class="column">
+            <div class="column-header">
+                <h2>In Progress</h2>
+                <span class="card-count">2</span>
+            </div>
+
+            <div class="card-list">
+                <div class="card">Redesign landing page hero</div>
+                <div class="card">set up CI pipeline</div>
+            </div>
+
+            <button class="add-card-btn">+ add card</button>
+        </div>
+        <div class="column">
+            <div class="column-header">
+                <h2>Done</h2>
+                <span class="card-count">1</span>
+            </div>
+            <div class="card-list">
+                <div class="card">Initial project setup</div>
+            </div>
+
+            <button class="add-card-btn">+ add card</button>
+        </div>
+
+        <button class="add-column-btn">+ add column</button>
+    </main>
 
     <script type="module" src="js/main.js"></script>
 </body>
