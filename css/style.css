@@ -180,3 +180,47 @@ body {
 .delete-btn.hidden {
     display: none;
 }
+.dragging{
+    opacity: 0.4;
+}
+
+.card-labels{
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.label-chip{
+    width: 29px;
+    height: 6px;
+    border-radius: 3px;
+}
+
+.modal-labels{
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap-sm);
+    margin-bottom: var(--gap-sm);
+}
+
+.modal-label-chip{
+    font-size: 0.75rem;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 999px;
+    opacity: 0.5;
+}
+
+.modal-label-chip.active{
+    opacity: 1;
+}
+
+.add-label-btn{
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--gap-md);
+}
+
+.add-label-btn:hover{
+    color: var(--color-accent);
+}

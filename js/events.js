@@ -10,6 +10,7 @@ import {
  
 
 
+import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel } from "./state.js";
 import { commit } from "./main.js";
 
 const boardEl = document.getElementById("board");
@@ -20,6 +21,8 @@ const cardForm = document.getElementById("card-form");
 const cardTitleInput = document.getElementById("card-title-input");
 const cancelBtn = document.getElementById("modal-cancel-btn");
 const deleteBtn = document.getElementById("modal-delete-btn");
+const modalLabelsEl = document.getElementById("modal-labels");
+const addLabelBtn = document.getElementById("add-label-btn");
 
 let modalMode = null;
 let modalTargetColumnId = null;

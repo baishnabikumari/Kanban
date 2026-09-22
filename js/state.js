@@ -6,6 +6,7 @@ export const state = {
         {
             id: "b1",
             name: "My Project",
+            labels: [],
             columns: [
                 {
                     id: "c1",
@@ -91,4 +92,28 @@ export function deleteboard(board, cardId) {
             
         }
     }
+}
+export function addLabel(board, name, color){
+    board.labels.push({ id: generateId(), name, color });
+}
+
+export function toggleCardLabel(card, labelId){
+    card.labelIds = card.labelIds || [];
+    const idx = card.labelIds.indexOf(labelId);
+    if(idx === -1){
+        card.labelIds.push(labelId);
+    } else {
+        card.labelIds.splice(idx, 1);
+    }
+}
+
+export function moveCard(board, cardId, targetColumnId, targetIndex){
+    const found = findCard(board, cardId);
+    if(!found) return;
+
+    const sourceIndex = found.column.cards.findIndex(c => c.id === cardId);
+    found.column.cards.splice(sourceIndex, 1);
+
+    const targetColumn = board.column.find(c => c.id === targetColumnId);
+    targetColumn.card.splice(targetIndex, 0, found.card);
 }

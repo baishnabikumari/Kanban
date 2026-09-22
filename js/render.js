@@ -8,7 +8,7 @@ export function render() {
     boardEl.innerHTML = "";
 
     board.columns.forEach(column => {
-        boardEl.appendChild(renderColumn(column));
+        boardEl.appendChild(renderColumn(column, board.labels));
     });
 
     const addColumnBtn = document.createElement("button");
@@ -19,6 +19,7 @@ export function render() {
 }
 
 function renderColumn(column) {
+function renderColumn(column, labels){
     const columnEl = document.createElement("div");
     columnEl.className = "column";
     columnEl.dataset.columnId = column.id;
@@ -51,14 +52,15 @@ function renderColumn(column) {
 
     const cardList = document.createElement("div");
     cardList.className = "card-list";
+    column.cards.forEach(card => cardList.appendChild(renderCard(card, labels)));
+    columnEl.appendChild(cardList);
+    const addCardBtn = document.createElement("button");
 
     column.cards.forEach(card => {
         cardList.appendChild(renderCard(card));
     });
 
     columnEl.appendChild(cardList);
-
-    const addCardBtn = document.createElement("button");
     addCardBtn.className = "add-card-btn";
     addCardBtn.textContent = "+ add card";
 
@@ -74,5 +76,26 @@ function renderCard(card) {
     cardEl.dataset.cardId = card.id;
     cardEl.textContent = card.title;
 
+    cardEl.draggable = true;
+
+    const cardLabels = (card.labelIds || [])
+        .map(id => labels.find(l => l.id === id))
+        .filter(Boolean);
+
+    if (cardLabels.length){
+        const labelRow = document.createElement("div");
+        labelRow.className = "card-labels";
+        cardLabels.forEach(label => {
+            const chip = document.createElement("span");
+            chip.className = "label-chip";
+            chip.style.background = label.color;
+            chip.title = label.name;
+            labelRow.appendChild(chip);
+        });
+        cardEl.appendChild(labelRow);
+    }
+    const titleEl = document.createElement("div");
+    titleEl.textContent = card.title;
+    cardEl.appendChild(titleEl);
     return cardEl;
 }
