@@ -31,11 +31,11 @@ function handleDrop(e){
     const cardList = e.target.closest(".card-list");
     if(!cardList || !draggedCardId) return;
     e.preventDefault();
-    
+
     const columnEl = cardList.closest(".column");
     const targetColumnId = columnEl.dataset.ColumnId;
     const board = getActiveBoard();
     const targetColumn = board.columns.find(c => c.id === targetColumnId);
-    moveCard(board, draggedCardId, targetColumn, targetColumn.cards.length);
+    moveCard(board, draggedCardId, targetColumnId, targetColumn.cards.length);
     commit();
 }

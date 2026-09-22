@@ -69,7 +69,7 @@ function renderColumn(column, labels){
     return columnEl;
 }
 
-function renderCard(card) {
+function renderCard(card, labels) {
     const cardEl = document.createElement("div");
 
     cardEl.className = "card";

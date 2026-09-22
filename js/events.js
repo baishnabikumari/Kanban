@@ -13,7 +13,7 @@ const deleteBtn = document.getElementById("modal-delete-btn");
 const modalLabelsEl = document.getElementById("modal-labels");
 const addLabelBtn = document.getElementById("add-label-btn");
 const searchInput = document.getElementById("search-input");
-const modalCheckItemInput = document.getElementById("modal-checklist");
+const modalChecklistEl = document.getElementById("modal-checklist");
 const checklistItemInput = document.getElementById("checklist-item-input");
 const addChecklistItemBtn = document.getElementById("add-checklist-item-btn");
  
@@ -127,7 +127,7 @@ function handleAddLabel(){
 }
 
 function renderModalChecklist(){
-    renderModalChecklist.innerHTML = "";
+    modalChecklistEl.innerHTML = "";
     if(modalMode !== "edit") return;
 
     const board = getActiveBoard();
@@ -135,11 +135,11 @@ function renderModalChecklist(){
     if(!found) return;
 
     (found.card.checklist || []).forEach(item => {
-        const row = document.createElementNS("div");
+        const row = document.createElement("div");
         row.className = "checklist-item";
 
         const checkbox = document.createElement("input");
-        checkbox.type = "checkboc";
+        checkbox.type = "checkbox";
         checkbox.checked = item.done;
         checkbox.addEventListener("change", () => {
             toggleChecklistItem(found.card, item.id);

@@ -59,31 +59,31 @@
     </main>
 
     <div id="card-modal" class="modal hidden">
-    </div class="modal-content">
-    <h3 id="modal-title">Add Card</h3>
+        <div class="modal-content">
+            <h3 id="modal-title">Add Card</h3>
 
-    <form id="card-form">
-        <label>
-            Title
-            <input type="text" id="card-title-input" required>
-        </label>
+            <form id="card-form">
+                <label>
+                    Title
+                    <input type="text" id="card-title-input" required>
+                </label>
 
-        <div class="modal-labels" id="modal-labels"></div>
-        <button type="button" id="add-label-btn" class="add-label-btn">+ label</button>
+                <div class="modal-labels" id="modal-labels"></div>
+                <button type="button" id="add-label-btn" class="add-label-btn">+ label</button>
 
-        <div class="modal-checklist" id="modal-checklist"></div>
-        <div class="checklist-input-row">
-            <input type="text" id="checklist-item-input" placeholder="Add checklist item">
-            <button type="button" id="add-checklist-item-btn">+</button>
+                <div class="modal-checklist" id="modal-checklist"></div>
+                <div class="checklist-input-row">
+                    <input type="text" id="checklist-item-input" placeholder="Add checklist item">
+                    <button type="button" id="add-checklist-item-btn">+</button>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="modal-delete-btn" class="delete-btn hidden">Delete</button>
+                    <button type="button" id="modal-cancel-btn">Cancel</button>
+                    <button type="submit" id="modal-save-btn">Save</button>
+                </div>
+            </form>
         </div>
-
-        <div class="modal-actions">
-            <button type="button" id="modal-delete-btn" class="delete-btn hidden">Delete</button>
-            <button type="button" id="modal-cancel-btn">Cancel</button>
-            <button type="submit" id="modal-save-btn">Save</button>
-        </div>
-    </form>
-    </div>
     </div>
     <script type="module" src="js/main.js"></script>
 </body>
