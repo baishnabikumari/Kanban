@@ -1,6 +1,12 @@
 import { getActiveBoard } from "./state.js";
 
 const boardEl = document.getElementById("board");
+let filters = { search: "" };
+
+export function setSearchFilter(text){
+    filters.search = text.trim().toLowerCase();
+    render();
+}
 
 export function render() {
     const board = getActiveBoard();
@@ -50,7 +56,9 @@ function renderColumn(column, labels){
 
     const cardList = document.createElement("div");
     cardList.className = "card-list";
-    column.cards.forEach(card => cardList.appendChild(renderCard(card, labels)));
+    column.cards
+        .filter(card => card.title.toLowerCase().includes(filters.search))
+        .forEach(card => cardList.appendChild(renderCard(card, labels)));
     columnEl.appendChild(cardList);
 
     const addCardBtn = document.createElement("button");
@@ -87,5 +95,13 @@ function renderCard(card) {
     const titleEl = document.createElement("div");
     titleEl.textContent = card.title;
     cardEl.appendChild(titleEl);
+
+    if(card.checklist && card.checklist.length){
+        const done = card.checklist.filter(i => i.done).length;
+        const progressEl = document.createElement("div");
+        progressEl.className = "card-checklist-progress";
+        progressEl.textContent = `${done}/${card.checklist.length}`;
+        cardEl.appendChild(progressEl);
+    }
     return cardEl;
 }

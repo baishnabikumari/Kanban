@@ -13,6 +13,7 @@
 <body>
     <header class="app-header">
         <h1>Kanban</h1>
+        <input type="text" id="search-input" class="search-input" placeholder="Search Cards...">
     </header>
     <main id="board" class="board">
         <div class="column">
@@ -69,6 +70,12 @@
 
         <div class="modal-labels" id="modal-labels"></div>
         <button type="button" id="add-label-btn" class="add-label-btn">+ label</button>
+
+        <div class="modal-checklist" id="modal-checklist"></div>
+        <div class="checklist-input-row">
+            <input type="text" id="checklist-item-input" placeholder="Add checklist item">
+            <button type="button" id="add-checklist-item-btn">+</button>
+        </div>
 
         <div class="modal-actions">
             <button type="button" id="modal-delete-btn" class="delete-btn hidden">Delete</button>

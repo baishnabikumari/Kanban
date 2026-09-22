@@ -1,5 +1,6 @@
-import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel } from "./state.js";
+import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem } from "./state.js";
 import { commit } from "./main.js";
+import { setSearchFilter } from "./render.js";
 
 const boardEl = document.getElementById("board");
 
@@ -11,7 +12,11 @@ const cancelBtn = document.getElementById("modal-cancel-btn");
 const deleteBtn = document.getElementById("modal-delete-btn");
 const modalLabelsEl = document.getElementById("modal-labels");
 const addLabelBtn = document.getElementById("add-label-btn");
-
+const searchInput = document.getElementById("search-input");
+const modalCheckItemInput = document.getElementById("modal-checklist");
+const checklistItemInput = document.getElementById("checklist-item-input");
+const addChecklistItemBtn = document.getElementById("add-checklist-item-btn");
+ 
 let modalMode = null;
 let modalTargetColumnId = null;
 let modalTargetCardId = null;
@@ -22,6 +27,8 @@ export function setupEvents() {
     deleteBtn.addEventListener("click", handleDeleteCard);
     cardForm.addEventListener("submit", handleFormSubmit);
     addLabelBtn.addEventListener("click", handleAddLabel);
+    addChecklistItemBtn.addEventListener("click", handleAddChecklistItem);
+    searchInput.addEventListener("input", () => setSearchFilter(searchInput.value));
 }
 
 function handleBoardClick(e) {
@@ -80,6 +87,7 @@ function openModal(mode, columnId, cardId, currentTitle) {
     modalEl.classList.remove("hidden");
     cardTitleInput.focus();
     renderModalLabels();
+    renderModalChecklist();
 }
 
 function renderModalLabels(){
@@ -116,6 +124,59 @@ function handleAddLabel(){
     addLabel(getActiveBoard(), name.trim(), color);
     commit();
     renderModalLabels();
+}
+
+function renderModalChecklist(){
+    renderModalChecklist.innerHTML = "";
+    if(modalMode !== "edit") return;
+
+    const board = getActiveBoard();
+    const found = findCard(board, modalTargetCardId);
+    if(!found) return;
+
+    (found.card.checklist || []).forEach(item => {
+        const row = document.createElementNS("div");
+        row.className = "checklist-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkboc";
+        checkbox.checked = item.done;
+        checkbox.addEventListener("change", () => {
+            toggleChecklistItem(found.card, item.id);
+            commit();
+            renderModalChecklist();
+        });
+        const label = document.createElement("span");
+        label.textContent = item.text;
+        if(item.done) label.classList.add("done");
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.textContent = "x";
+        removeBtn.addEventListener("click", () => {
+            deleteChecklistItem(found.card, item.id);
+            commit();
+            renderModalChecklist();
+        });
+        row.appendChild(checkbox)
+        row.appendChild(label);
+        row.appendChild(removeBtn);
+        modalChecklistEl.appendChild(row);
+    });
+}
+
+function handleAddChecklistItem(){
+    const text = checklistItemInput.value.trim();
+    if(!text) return;
+
+    const board = getActiveBoard();
+    const found = findCard(board, modalTargetCardId);
+    if(!found) return;
+
+    addChecklistItem(found.card, text);
+    checklistItemInput.value = "";
+    commit();
+    renderModalChecklist();
 }
 
 function closeModal(){

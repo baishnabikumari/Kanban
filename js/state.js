@@ -117,3 +117,17 @@ export function moveCard(board, cardId, targetColumnId, targetIndex){
     const targetColumn = board.columns.find(c => c.id === targetColumnId);
     targetColumn.cards.splice(targetIndex, 0, found.card);
 }
+
+export function addChecklistItem(card, text){
+    card.checklist = card.checklist || [];
+    card.checklist.push({ id: generateId(), text, done: false });
+}
+
+export function toggleChecklistItem(card, itemId){
+    const item = (card.checklist || []).find(i => i.id === itemId);
+    if(item) item.done = !item.done;
+}
+
+export function deleteChecklistItem(card, itemId){
+    card.checklist = (card.checklist || []).filter(i => i.id !== itemId);
+}
