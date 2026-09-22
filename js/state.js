@@ -1,3 +1,5 @@
+import { generateId } from "./utils.js";
+
 export const state = {
     activeBoardId: "b1",
     boards: [
@@ -35,4 +37,12 @@ export const state = {
 };
 export function getActiveBoard(){
     return state.boards.find(b => b.id === state.activeBoardId);
+}
+
+export function addColumn(board, title) {
+  board.columns.push({
+    id: generateId(),
+    title,
+    cards: []
+  });
 }
