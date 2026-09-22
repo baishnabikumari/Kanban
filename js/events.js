@@ -1,15 +1,3 @@
-import {
-    getActiveBoard,
-    addColumn,
-    deleteColumn,
-    addCard,
-    editCard,
-    deleteCard,
-    findCard
-} from "./state.js";
- 
-
-
 import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel } from "./state.js";
 import { commit } from "./main.js";
 
@@ -33,6 +21,7 @@ export function setupEvents() {
     cancelBtn.addEventListener("click", closeModal);
     deleteBtn.addEventListener("click", handleDeleteCard);
     cardForm.addEventListener("submit", handleFormSubmit);
+    addLabelBtn.addEventListener("click", handleAddLabel);
 }
 
 function handleBoardClick(e) {
@@ -85,19 +74,52 @@ function openModal(mode, columnId, cardId, currentTitle) {
     modalTargetCardId = cardId;
 
     modalTitleEl.textContent = mode === "add" ? "Add card" : "Edit card";
-
     cardTitleInput.value = currentTitle;
-
     deleteBtn.classList.toggle("hidden", mode !== "edit");
 
     modalEl.classList.remove("hidden");
-
     cardTitleInput.focus();
+    renderModalLabels();
 }
 
-function closeModal() {
-    modalEl.classList.add("hidden");
+function renderModalLabels(){
+    modalLabelsEl.innerHTML = "";
+    if(modalMode !== "edit") return;
 
+    const board = getActiveBoard();
+    const found = findCard(board, modalTargetCardId);
+    if(!found) return;
+
+    board.labels.forEach(label => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "modal-label-chip";
+        chip.style.background = label.color;
+        chip.classList.toggle("active", (found.card.labelIds || []).includes(label.id));
+
+        chip.addEventListener("click", () => {
+            toggleCardLabel(found.card, label.id);
+            commit();
+            renderModalLabels();
+        });
+        modalLabelsEl.appendChild(chip);
+    });
+}
+
+function handleAddLabel(){
+    const name = prompt("Label name:");
+    if(!name || !name.trim()) return;
+
+    const colors = ["#c1653d", "#5b7c99", "#7a8c5c", "#a8532f", "#8a6d9c"];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    addLabel(getActiveBoard(), name.trim(), color);
+    commit();
+    renderModalLabels();
+}
+
+function closeModal(){
+    modalEl.classList.add("hidden");
     cardForm.reset();
 }
 
@@ -128,9 +150,7 @@ function handleDeleteCard() {
 
     if(ok) {
         deleteCard(getActiveBoard(), modalTargetCardId);
-
-        closedmodal();
-
+        closeModal();
         commit();
     }
 }

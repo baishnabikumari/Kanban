@@ -8,7 +8,7 @@ let draggedCardId = null;
 export function setupDragDrop(){
     boardEl.addEventListener("dragstart", handleDragStart);
     boardEl.addEventListener("dragend", handleDragEnd);
-    boardEl.addEventListener("dragover", handleDragEnd);
+    boardEl.addEventListener("dragover", handleDragOver);
     boardEl.addEventListener("drop", handleDrop);
 }
 
@@ -22,10 +22,16 @@ function handleDragEnd(){
 }
 
 function handleDragOver(e){
-    const cardList = e.target.closest("");
+    const cardList = e.target.closest(".card-list");
+    if(!cardList) return;
+    e.preventDefault();
+}
+
+function handleDrop(e){
+    const cardList = e.target.closest(".card-list");
     if(!cardList || !draggedCardId) return;
     e.preventDefault();
-
+    
     const columnEl = cardList.closest(".column");
     const targetColumnId = columnEl.dataset.ColumnId;
     const board = getActiveBoard();

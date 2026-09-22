@@ -48,15 +48,15 @@ export function addColumn(board, title) {
   });
 }
 
-export function deletecolumn(board, columnId) {
-    const idx = board.columns.findIndex(c.id === columnId);
+export function deleteColumn(board, columnId) {
+    const idx = board.columns.findIndex(c => c.id === columnId);
 
     if (idx !== -1) {
         board.columns.splice(idx, 1);
     }
 }
 
-export function addcard(column, title) {
+export function addCard(column, title) {
     column.cards.push({
         id: generateId(),
         title,
@@ -64,7 +64,7 @@ export function addcard(column, title) {
     });
 }
 
-export function findcard(board, cardId) {
+export function findCard(board, cardId) {
     for (const column of board.columns) {
         const card = column.cards.find(c => c.id === cardId);
 
@@ -75,17 +75,17 @@ export function findcard(board, cardId) {
     return null;
 }
 
-export function editcard(board, cardId, newTitle) {
-    const found = findcard(board, cardId);
+export function editCard(board, cardId, newTitle) {
+    const found = findCard(board, cardId);
 
     if (found) {
         found.card.title = newTitle;
     }
 }
 
-export function deleteboard(board, cardId) {
+export function deleteCard(board, cardId) {
     for (const column of board.columns) {
-        const idx = column.cards.findindex(c => c.id === cardId);
+        const idx = column.cards.findIndex(c => c.id === cardId);
 
         if (idx !== -1) {
             column.cards.splice(idx, 1);
@@ -114,6 +114,6 @@ export function moveCard(board, cardId, targetColumnId, targetIndex){
     const sourceIndex = found.column.cards.findIndex(c => c.id === cardId);
     found.column.cards.splice(sourceIndex, 1);
 
-    const targetColumn = board.column.find(c => c.id === targetColumnId);
-    targetColumn.card.splice(targetIndex, 0, found.card);
+    const targetColumn = board.columns.find(c => c.id === targetColumnId);
+    targetColumn.cards.splice(targetIndex, 0, found.card);
 }

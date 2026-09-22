@@ -17,8 +17,6 @@ export function render() {
 
     boardEl.appendChild(addColumnBtn);
 }
-
-function renderColumn(column) {
 function renderColumn(column, labels){
     const columnEl = document.createElement("div");
     columnEl.className = "column";
@@ -54,16 +52,10 @@ function renderColumn(column, labels){
     cardList.className = "card-list";
     column.cards.forEach(card => cardList.appendChild(renderCard(card, labels)));
     columnEl.appendChild(cardList);
+
     const addCardBtn = document.createElement("button");
-
-    column.cards.forEach(card => {
-        cardList.appendChild(renderCard(card));
-    });
-
-    columnEl.appendChild(cardList);
     addCardBtn.className = "add-card-btn";
     addCardBtn.textContent = "+ add card";
-
     columnEl.appendChild(addCardBtn);
 
     return columnEl;
@@ -74,8 +66,6 @@ function renderCard(card) {
 
     cardEl.className = "card";
     cardEl.dataset.cardId = card.id;
-    cardEl.textContent = card.title;
-
     cardEl.draggable = true;
 
     const cardLabels = (card.labelIds || [])
