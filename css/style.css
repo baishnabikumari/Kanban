@@ -154,3 +154,29 @@ body {
 #modal-cancel-btn {
     color: var(--color-text-muted);
 }
+
+.column-header left {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.delete-column-btn {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1;
+    padding: 0 4px;
+}
+
+.delete-column-btn:hover {
+    color: #b3402c;
+}
+
+.delete-btn {
+    color: #b3402c;
+    margin-right: auto;
+}
+
+.delete-btn.hidden {
+    display: none;
+}

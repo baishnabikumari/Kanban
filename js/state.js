@@ -47,6 +47,14 @@ export function addColumn(board, title) {
   });
 }
 
+export function deletecolumn(board, columnId) {
+    const idx = board.columns.findIndex(c.id === columnId);
+
+    if (idx !== -1) {
+        board.columns.splice(idx, 1);
+    }
+}
+
 export function addcard(column, title) {
     column.cards.push({
         id: generateId(),
@@ -71,5 +79,16 @@ export function editcard(board, cardId, newTitle) {
 
     if (found) {
         found.card.title = newTitle;
+    }
+}
+
+export function deleteboard(board, cardId) {
+    for (const column of board.columns) {
+        const idx = column.cards.findindex(c => c.id === cardId);
+
+        if (idx !== -1) {
+            column.cards.splice(idx, 1);
+            
+        }
     }
 }

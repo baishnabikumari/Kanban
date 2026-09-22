@@ -1,18 +1,24 @@
 import { getActiveBoard } from "./state.js";
+
 const boardEl = document.getElementById("board");
 
-export function render(){
+export function render() {
     const board = getActiveBoard();
+
     boardEl.innerHTML = "";
+
     board.columns.forEach(column => {
         boardEl.appendChild(renderColumn(column));
     });
+
     const addColumnBtn = document.createElement("button");
     addColumnBtn.className = "add-column-btn";
     addColumnBtn.textContent = "+ add column";
+
     boardEl.appendChild(addColumnBtn);
 }
-function renderColumn(column){
+
+function renderColumn(column) {
     const columnEl = document.createElement("div");
     columnEl.className = "column";
     columnEl.dataset.columnId = column.id;
@@ -27,27 +33,46 @@ function renderColumn(column){
     countEl.className = "card-count";
     countEl.textContent = column.cards.length;
 
-    header.appendChild(titleEl);
-    header.appendChild(countEl);
+    const headerLeft = document.createElement("div");
+    headerLeft.className = "column-header-left";
+
+    headerLeft.appendChild(titleEl);
+    headerLeft.appendChild(countEl);
+
+    const deleteColumnBtn = document.createElement("button");
+    deleteColumnBtn.className = "delete-column-btn";
+    deleteColumnBtn.textContent = "×";
+    deleteColumnBtn.title = "Delete column";
+
+    header.appendChild(headerLeft);
+    header.appendChild(deleteColumnBtn);
+
     columnEl.appendChild(header);
 
     const cardList = document.createElement("div");
     cardList.className = "card-list";
-    column.cards.forEach(card => cardList.appendChild(renderCard(card)));
-    columnEl.appendChild(cardList);
-    const addCardBtn = document.createElement("button");
 
+    column.cards.forEach(card => {
+        cardList.appendChild(renderCard(card));
+    });
+
+    columnEl.appendChild(cardList);
+
+    const addCardBtn = document.createElement("button");
     addCardBtn.className = "add-card-btn";
     addCardBtn.textContent = "+ add card";
+
     columnEl.appendChild(addCardBtn);
 
     return columnEl;
 }
 
-function renderCard(card){
+function renderCard(card) {
     const cardEl = document.createElement("div");
+
     cardEl.className = "card";
     cardEl.dataset.cardId = card.id;
     cardEl.textContent = card.title;
+
     return cardEl;
 }

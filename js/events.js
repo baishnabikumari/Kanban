@@ -1,4 +1,15 @@
-import { getActiveBoard, addColumn, addCard, editCard, findCard } from "./state.js";
+import {
+    getActiveBoard,
+    addColumn,
+    deleteColumn,
+    addCard,
+    editCard,
+    deleteCard,
+    findCard
+} from "./state.js";
+ 
+
+
 import { commit } from "./main.js";
 
 const boardEl = document.getElementById("board");
@@ -8,6 +19,7 @@ const modalTitleEl = document.getElementById("modal-title");
 const cardForm = document.getElementById("card-form");
 const cardTitleInput = document.getElementById("card-title-input");
 const cancelBtn = document.getElementById("modal-cancel-btn");
+const deleteBtn = document.getElementById("modal-delete-btn");
 
 let modalMode = null;
 let modalTargetColumnId = null;
@@ -16,6 +28,7 @@ let modalTargetCardId = null;
 export function setupEvents() {
     boardEl.addEventListener("click", handleBoardClick);
     cancelBtn.addEventListener("click", closeModal);
+    deleteBtn.addEventListener("click", handleDeleteCard);
     cardForm.addEventListener("submit", handleFormSubmit);
 }
 
@@ -28,6 +41,18 @@ function handleBoardClick(e) {
             commit();
         }
 
+        return;
+    }
+
+    if (e.target.matches(".delete-column-btn"))  {
+        const columnE1 = e.target.closest(".column");
+
+        const ok = confirm("Delete this column and all its card?");
+
+        if(ok) {
+            deleteColumn(getActiveBoard(), columnE1.dataset.columnId);
+            commit();
+        }
         return;
     }
 
@@ -60,6 +85,8 @@ function openModal(mode, columnId, cardId, currentTitle) {
 
     cardTitleInput.value = currentTitle;
 
+    deleteBtn.classList.toggle("hidden", mode !== "edit");
+
     modalEl.classList.remove("hidden");
 
     cardTitleInput.focus();
@@ -91,4 +118,16 @@ function handleFormSubmit(e) {
     closeModal();
 
     commit();
+}
+
+function handleDeleteCard() {
+    const ok = confirm("Delete this Card?");
+
+    if(ok) {
+        deleteCard(getActiveBoard(), modalTargetCardId);
+
+        closedmodal();
+
+        commit();
+    }
 }

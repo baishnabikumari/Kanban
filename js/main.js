@@ -1,7 +1,7 @@
 import { state } from "./state.js";
 import { loadState, saveState } from "./storage.js";
 import { render } from "./render.js";
-import { setupevents } from "./events.js";
+import { setupEvents } from "./events.js";
 const saved = loadState();
 if(saved) {
     Object.assign(state, saved);
