@@ -8,7 +8,7 @@ export function setSearchFilter(text){
     render();
 }
 
-export function setLabelFilter(text){
+export function setLabelFilter(labelId){
     filters.labelId = labelId;
     render();
 }
@@ -43,6 +43,7 @@ function renderSlider(){
     state.boards.forEach(b => {
         const item = document.createElement("div");
         item.className = "board-list-item";
+        item.dataset.boardId = b.id;
         item.dataset.boardId = b.name;
         if(b.id === state.activeBoardId) item.classList.add("active");
         boardListEl.appendChild(item);

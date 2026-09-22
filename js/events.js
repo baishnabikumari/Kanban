@@ -15,7 +15,7 @@ const addLabelBtn = document.getElementById("add-label-btn");
 const searchInput = document.getElementById("search-input");
 const modalChecklistEl = document.getElementById("modal-checklist");
 const checklistItemInput = document.getElementById("checklist-item-input");
-const addChecklistItemBtn = document.getElementById("add-checklist-item-btn");\
+const addChecklistItemBtn = document.getElementById("add-checklist-item-btn");
 const priorityFilterEl = document.getElementById("priority-filter");
 const labelFilterEl = document.getElementById("label-filter");
 const boardListEl = document.getElementById("board-list");
@@ -48,7 +48,7 @@ function handleAddBoard(){
     commit();
 }
 
-function handleBoardListClick(){
+function handleBoardListClick(e){
     if(!e.target.matches(".board-list-item")) return;
     setActiveBoard(e.target.dataset.boardId);
     commit();

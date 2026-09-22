@@ -225,7 +225,7 @@ body {
     color: var(--color-accent);
 }
 
-.add-header{
+.app-header{
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -293,7 +293,7 @@ body {
     font-size: 0.85rem;
 }
 
-.app.body{
+.app-body{
     display: flex;
 }
 
