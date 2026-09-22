@@ -46,3 +46,30 @@ export function addColumn(board, title) {
     cards: []
   });
 }
+
+export function addcard(column, title) {
+    column.cards.push({
+        id: generateId(),
+        title,
+        createdAt: Date.now()
+    });
+}
+
+export function findcard(board, cardId) {
+    for (const column of board.columns) {
+        const card = column.cards.find(c => c.id === cardId);
+
+        if (card) {
+            return { card, column };
+        }
+    }
+    return null;
+}
+
+export function editcard(board, cardId, newTitle) {
+    const found = findcard(board, cardId);
+
+    if (found) {
+        found.card.title = newTitle;
+    }
+}
