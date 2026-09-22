@@ -36,6 +36,22 @@ export const state = {
         }
     ]
 };
+
+export function addBoard(name){
+    const newBoard = {
+        id: generateId(),
+        name,
+        labels: [],
+        columns: []
+    };
+    state.boards.push(newBoard);
+    return newBoard
+}
+
+export function setActiveBoard(boardId){
+    state.activeBoardId = boardId;
+}
+
 export function getActiveBoard(){
     return state.boards.find(b => b.id === state.activeBoardId);
 }

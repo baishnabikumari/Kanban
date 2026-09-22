@@ -1,10 +1,20 @@
-import { getActiveBoard } from "./state.js";
+import { getActiveBoard, state } from "./state.js";
 
 const boardEl = document.getElementById("board");
-let filters = { search: "" };
+let filters = { search: "", labelId: "", priority: ""};
 
 export function setSearchFilter(text){
     filters.search = text.trim().toLowerCase();
+    render();
+}
+
+export function setLabelFilter(text){
+    filters.labelId = labelId;
+    render();
+}
+
+export function setPriorityFilter(priority){
+    filters.priority = priority;
     render();
 }
 
@@ -22,7 +32,37 @@ export function render() {
     addColumnBtn.textContent = "+ add column";
 
     boardEl.appendChild(addColumnBtn);
+    renderSlider();
+    renderLabelFilterOptions(board.labels);
 }
+
+function renderSlider(){
+    const boardListEl = document.getElementById("board-list");
+    boardListEl.innerHTML = "";
+
+    state.boards.forEach(b => {
+        const item = document.createElement("div");
+        item.className = "board-list-item";
+        item.dataset.boardId = b.name;
+        if(b.id === state.activeBoardId) item.classList.add("active");
+        boardListEl.appendChild(item);
+    });
+}
+
+function renderLabelFilterOptions(labels){
+    const labelFilterEl = document.getElementById("label-filter");
+    const currentValue = labelFilterEl.value;
+    labelFilterEl.innerHTML = '<option value="">All labels</option>';
+
+    labels.forEach(label => {
+        const opt = document.createElement("option");
+        opt.value = label.id;
+        opt.textContent = label.name;
+        labelFilterEl.appendChild(opt);
+    });
+    labelFilterEl.value = currentValue;
+}
+
 function renderColumn(column, labels){
     const columnEl = document.createElement("div");
     columnEl.className = "column";
@@ -58,6 +98,8 @@ function renderColumn(column, labels){
     cardList.className = "card-list";
     column.cards
         .filter(card => card.title.toLowerCase().includes(filters.search))
+        .filter(card => !filters.labelId || (card.labelIds || []).includes(filters.labelId))
+        .filter(card => !filters.priority || card.priority === filters.priority)
         .forEach(card => cardList.appendChild(renderCard(card, labels)));
     columnEl.appendChild(cardList);
 

@@ -280,3 +280,52 @@ body {
     border-radius: var(--radius);
     font-size: 0.85rem;
 }
+
+.header-controls{
+    display: flex;
+    gap: var(--gap-sm);
+}
+
+.header-controls select{
+    padding: 6px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+}
+
+.app.body{
+    display: flex;
+}
+
+.sidebar{
+    width: 180px;
+    flex-shrink: 0;
+    padding: var(--gap-lg) var(--gap-md);
+    border-right: 1px solid var(--color-border);
+}
+
+.board-list-item{
+    padding: var(--gap-sm);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.board-list-item:hover{
+    background: var(--color-bg-alt);
+}
+
+.board-list-item.active{
+    background: var(--color-bg-alt);
+    font-weight: 600;
+}
+
+.add-board-btn{
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.add-board-btn:hover{
+    color: var(--color-accent);
+}

@@ -13,9 +13,28 @@
 <body>
     <header class="app-header">
         <h1>Kanban</h1>
-        <input type="text" id="search-input" class="search-input" placeholder="Search Cards...">
+        <div class="header-controls">
+            <input type="text" id="search-input" class="search-input" placeholder="Search Cards...">
+            <select id="priority-filter">
+                <option value="">All priorities</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <select id="label-filter">
+                <option value="All labels"></option>
+            </select>
+        </div>
     </header>
+    <div class="app-body">
+        <aside id="sidebar" class="sidebar">
+            <div id="board-list" class="board-list"></div>
+            <button id="add-button-btn" class="add-board-btn">+ add board</button>
+        </aside>
+        <main id="board" class="board"></main>
+    </div>
     <main id="board" class="board">
+
         <div class="column">
             <div class="column-header">
                 <h2>To Do?</h2>
@@ -57,6 +76,7 @@
 
         <button class="add-column-btn">+ add column</button>
     </main>
+    </div>
 
     <div id="card-modal" class="modal hidden">
         <div class="modal-content">

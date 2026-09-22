@@ -1,6 +1,6 @@
-import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem } from "./state.js";
+import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard } from "./state.js";
 import { commit } from "./main.js";
-import { setSearchFilter } from "./render.js";
+import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 
 const boardEl = document.getElementById("board");
 
@@ -15,7 +15,11 @@ const addLabelBtn = document.getElementById("add-label-btn");
 const searchInput = document.getElementById("search-input");
 const modalChecklistEl = document.getElementById("modal-checklist");
 const checklistItemInput = document.getElementById("checklist-item-input");
-const addChecklistItemBtn = document.getElementById("add-checklist-item-btn");
+const addChecklistItemBtn = document.getElementById("add-checklist-item-btn");\
+const priorityFilterEl = document.getElementById("priority-filter");
+const labelFilterEl = document.getElementById("label-filter");
+const boardListEl = document.getElementById("board-list");
+const addBoardBtn = document.getElementById("add-board-btn");
  
 let modalMode = null;
 let modalTargetColumnId = null;
@@ -29,6 +33,25 @@ export function setupEvents() {
     addLabelBtn.addEventListener("click", handleAddLabel);
     addChecklistItemBtn.addEventListener("click", handleAddChecklistItem);
     searchInput.addEventListener("input", () => setSearchFilter(searchInput.value));
+    priorityFilterEl.addEventListener("change", () => setPriorityFilter(priorityFilterEl.value));
+    labelFilterEl.addEventListener("change", () => setLabelFilter(labelFilterEl.value));
+    addBoardBtn.addEventListener("click", handleAddBoard);
+    boardListEl.addEventListener("click", handleBoardListClick);
+}
+
+function handleAddBoard(){
+    const name = prompt("Board name:");
+    if(!name || !name.trim()) return;
+
+    const newBoard = addBoard(name.trim());
+    setActiveBoard(newBoard.id);
+    commit();
+}
+
+function handleBoardListClick(){
+    if(!e.target.matches(".board-list-item")) return;
+    setActiveBoard(e.target.dataset.boardId);
+    commit();
 }
 
 function handleBoardClick(e) {
