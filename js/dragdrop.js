@@ -33,7 +33,7 @@ function handleDrop(e){
     e.preventDefault();
 
     const columnEl = cardList.closest(".column");
-    const targetColumnId = columnEl.dataset.ColumnId;
+    const targetColumnId = columnEl.dataset.columnId;
     const board = getActiveBoard();
     const targetColumn = board.columns.find(c => c.id === targetColumnId);
     moveCard(board, draggedCardId, targetColumnId, targetColumn.cards.length);

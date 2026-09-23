@@ -17,8 +17,8 @@ let restoring = false;
 
 applytheme();
 render();
-render();
 setupEvents();
+setupDragDrop();
 
 export function commit() {
     saveState(state);
@@ -50,13 +50,6 @@ export function redo() {
     restoring = false;
 }
 
-export function commit() {
-    saveState(state);
-    applytheme();
-    render();
-}
-setupDragDrop();
-
 function applytheme() {
-    document.documentElement.dataset.theme = state.theme || "Light";
+    document.documentElement.dataset.theme = state.theme || "light";
 }

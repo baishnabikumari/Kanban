@@ -331,7 +331,7 @@ body {
 }
 
 .stats-panel{
-    padding: var(--gap-md) var(--gap-1g);
+    padding: var(--gap-md) var(--gap-lg);
     border-bottom: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
 }
@@ -365,7 +365,7 @@ body {
     flex-wrap: wrap;
  }
 
- .columns {
+ .column {
     width: 220px;
  }
  

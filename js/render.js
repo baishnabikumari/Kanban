@@ -24,7 +24,7 @@ export function render() {
     boardEl.innerHTML = "";
 
     board.columns.forEach(column => {
-        boardEl.appendChild(renderColumn(column, board.labels));
+        boardEl.appendChild(renderColumn(column, board.labels || []));
     });
 
     const addColumnBtn = document.createElement("button");
@@ -33,7 +33,7 @@ export function render() {
 
     boardEl.appendChild(addColumnBtn);
     renderSlider();
-    renderLabelFilterOptions(board.labels);
+    renderLabelFilterOptions(board.labels || []);
 }
 
 function renderSlider(){
@@ -44,7 +44,7 @@ function renderSlider(){
         const item = document.createElement("div");
         item.className = "board-list-item";
         item.dataset.boardId = b.id;
-        item.dataset.boardId = b.name;
+        item.textContent = b.name;
         if(b.id === state.activeBoardId) item.classList.add("active");
         boardListEl.appendChild(item);
     });

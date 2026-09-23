@@ -2,7 +2,7 @@ import { generateId } from "./utils.js";
 
 export const state = {
     activeBoardId: "b1",
-    theme: "Light",
+    theme: "light",
     boards: [
         {
             id: "b1",
