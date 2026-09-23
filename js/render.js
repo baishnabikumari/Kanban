@@ -87,8 +87,9 @@ function renderColumn(column, labels){
 
     const deleteColumnBtn = document.createElement("button");
     deleteColumnBtn.className = "delete-column-btn";
-    deleteColumnBtn.textContent = "×";
+    deleteColumnBtn.textContent = "x";
     deleteColumnBtn.title = "Delete column";
+    deleteColumnBtn.setAttribute("aria-label", "Delete column");
 
     header.appendChild(headerLeft);
     header.appendChild(deleteColumnBtn);

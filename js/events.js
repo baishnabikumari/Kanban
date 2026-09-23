@@ -1,5 +1,5 @@
 import { state, getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme } from "./state.js";
-import { commit } from "./main.js";
+import { commit, undo, redo } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 import { renderStats } from "./stats.js";
 
@@ -28,6 +28,8 @@ const statsPanelEl = document.getElementById("stats-panel");
 const exportBtn = document.getElementById("export-btn");
 const importBtn = document.getElementById("import-btn");
 const importInput = document.getElementById("import-input");
+const undoBtn = document.getElementById("undo-btn");
+const redoBtn = document.getElementById("redo-btn");
 
 let modalMode = null;
 let modalTargetColumnId = null;
@@ -51,7 +53,8 @@ export function setupEvents() {
     exportBtn.addEventListener("click", handleExport);
     importBtn.addEventListener("click", () => importInput.click());
     importInput.addEventListener("change", handleImport);
-
+    undoBtn.addEventListener("click", undo);
+    redoBtn.addEventListener("click", redo);
     document.addEventListener("keydown", handleKeyDown);
 }
 
@@ -128,6 +131,18 @@ function handleThemeToggle() {
 function handleKeyDown(e) {
     if (e.key === "Escape" && !modalEl.classList.contains("hidden")) {
         closeModal();
+        return;
+    }
+
+    if((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey){
+        e.preventDefault();
+        undo();
+        return;
+    }
+
+    if((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.key === "z" && e.shiftKey))){
+        e.preventDefault();
+        redo();
         return;
     }
 
