@@ -1,6 +1,7 @@
 import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme } from "./state.js";
 import { commit } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
+import { renderStats } from "./stats.js";
 
 const boardEl = document.getElementById("board");
 
@@ -21,6 +22,8 @@ const labelFilterEl = document.getElementById("label-filter");
 const boardListEl = document.getElementById("board-list");
 const addBoardBtn = document.getElementById("add-board-btn");
 const themeToggleBtn = document.getElementById("theme-toggle-btn");
+const statsToggleBtn = document.getElementById("stats-toggle-btn");
+const statsPanelE1 = document.getElementById("stats-panel");
 
 let modalMode = null;
 let modalTargetColumnId = null;
@@ -39,8 +42,18 @@ export function setupEvents() {
     addBoardBtn.addEventListener("click", handleAddBoard);
     boardListEl.addEventListener("click", handleBoardListClick);
     themeToggleBtn.addEventListener("click", handleThemeToggle);
+    statsToggleBtn.addEventListener("click", handleStatsToggke);
     document.addEventListener("keydown", handleKeyDown);
 }
+
+function handleStatsToggle() {
+    statsPanelE1.classList.toggle("hidden");
+
+    if (!statsPanelE1.classList.contains("hidden")) {
+        renderStats();
+    }
+}
+
 
 function handleThemeToggle() {
     toggleTheme();

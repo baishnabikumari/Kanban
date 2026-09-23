@@ -25,9 +25,13 @@
                 <option value="">All labels</option>
             </select>
             <button type="button" id="theme-toggle-btn">🌙</button>
-            
+            <button type="button" id="stats-toggle-btn">📊 Stats</button>
+
         </div>
     </header>
+    <div id="stats-panel" class="stats-panel hidden">
+        <canvas id="stats-canvas" width="320" height="160"></canvas>
+    </div>
     <div class="app-body">
         <aside id="sidebar" class="sidebar">
             <div id="board-list" class="board-list"></div>

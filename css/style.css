@@ -329,3 +329,43 @@ body {
 .add-board-btn:hover{
     color: var(--color-accent);
 }
+
+.stats-panel{
+    padding: var(--gap-md) var(--gap-1g);
+    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+ .stats-panel.hidden {
+    display: none;
+ }
+
+ @media (max-width: 700px) {
+    .app-body {
+        flex-direction: column;
+    }
+ }
+
+ .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+    padding: var(--gap-sm) var(--gap-md);
+ }
+
+ .board-list {
+    display: flex;
+    gap: var(--gap-sm);
+    overflow-x: auto;
+ }
+
+ .header-controls {
+    flex-wrap: wrap;
+ }
+
+ .columns {
+    width: 220px;
+ }
+ 
