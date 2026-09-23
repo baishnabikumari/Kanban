@@ -117,10 +117,9 @@ body {
 
 .modal-content {
     background: var(--color-surface);
-    border-radius: 10px;
+    border-radius: var(--radius);
     padding: var(--gap-lg);
-    width: 360px;
-    box-shadow: 0 12px 32px rgba(28, 28, 26, 0.18);
+    width: 320px;
 }
 
 .modal-content h3 {
@@ -132,8 +131,6 @@ body {
     display: block;
     font-size: 0.85rem;
     color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
     margin-bottom: var(--gap-md);
 }
 
@@ -144,13 +141,6 @@ body {
     padding: var(--gap-sm);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
-    font-size: 0.95rem;
-}
-
-.modal-content input:focus{
-    outline: none;
-    border-color: var(--color-accent);
-    box-shadow: 0 0 0 3px rgba(193, 101, 61, 0.15);
 }
 
 .modal-actions {
@@ -220,25 +210,11 @@ body {
     border-radius: 3px;
 }
 
-.modal-section-labels {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    margin-bottom: var(--gap-sm) 0 var(--gap-sm);
-}
-
-.modal-labels{
+.modal-labels {
     display: flex;
     flex-wrap: wrap;
     gap: var(--gap-sm);
     margin-bottom: var(--gap-sm);
-    padding: var(--gap-sm);
-    background: var(--color-bg-alt);
-    border-radius: var(--radius);
-    min-height: 24px;
 }
 
 .modal-label-chip {
@@ -285,14 +261,6 @@ body {
 
 .modal-checklist {
     margin-bottom: var(--gap-sm);
-    padding: var(--gap-sm);
-    background: var(--color-bg-alt);
-    border-radius: var(--radius);
-}
-
-.modal-checklist:empty{
-    padding: 0;
-    background: none;
 }
 
 .checklist-item {
