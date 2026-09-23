@@ -1,4 +1,4 @@
-import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme } from "./state.js";
+import { state, getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme } from "./state.js";
 import { commit } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 import { renderStats } from "./stats.js";
@@ -23,7 +23,11 @@ const boardListEl = document.getElementById("board-list");
 const addBoardBtn = document.getElementById("add-board-btn");
 const themeToggleBtn = document.getElementById("theme-toggle-btn");
 const statsToggleBtn = document.getElementById("stats-toggle-btn");
-const statsPanelE1 = document.getElementById("stats-panel");
+const statsPanelEl = document.getElementById("stats-panel");
+
+const exportBtn = document.getElementById("export-btn");
+const importBtn = document.getElementById("import-btn");
+const importInput = document.getElementById("import-input");
 
 let modalMode = null;
 let modalTargetColumnId = null;
@@ -42,18 +46,79 @@ export function setupEvents() {
     addBoardBtn.addEventListener("click", handleAddBoard);
     boardListEl.addEventListener("click", handleBoardListClick);
     themeToggleBtn.addEventListener("click", handleThemeToggle);
-    statsToggleBtn.addEventListener("click", handleStatsToggke);
+    statsToggleBtn.addEventListener("click", handleStatsToggle);
+
+    exportBtn.addEventListener("click", handleExport);
+    importBtn.addEventListener("click", () => importInput.click());
+    importInput.addEventListener("change", handleImport);
+
     document.addEventListener("keydown", handleKeyDown);
 }
 
-function handleStatsToggle() {
-    statsPanelE1.classList.toggle("hidden");
+function handleExport() {
+    const dataStr = JSON.stringify(state, null, 2);
 
-    if (!statsPanelE1.classList.contains("hidden")) {
+    const blob = new Blob([dataStr], {
+        type: "application/json"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = "kanban-export.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function handleImport(e) {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        try {
+            const imported = JSON.parse(reader.result);
+
+            if (
+                !imported ||
+                !Array.isArray(imported.boards) ||
+                !imported.boards.some(
+                    b => b.id === imported.activeBoardId &&
+                    Array.isArray(b.columns) &&
+                    Array.isArray(b.labels) &&
+                    b.columns.every(c => Array.isArray(c.cards))
+                )
+            ) {
+                throw new Error("Invalid board data");
+            }
+
+            Object.assign(state, imported);
+
+            commit();
+
+        } catch (err) {
+            alert("That file does not look like a valid Kanban export.");
+        }
+    };
+
+    reader.readAsText(file);
+
+    importInput.value = "";
+}
+
+function handleStatsToggle() {
+    statsPanelEl.classList.toggle("hidden");
+
+    if (!statsPanelEl.classList.contains("hidden")) {
         renderStats();
     }
 }
-
 
 function handleThemeToggle() {
     toggleTheme();
@@ -314,6 +379,7 @@ function handleFormSubmit(e) {
         );
 
         addCard(column, title);
+
     } else if (modalMode === "edit") {
         editCard(board, modalTargetCardId, title);
     }
