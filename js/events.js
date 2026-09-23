@@ -1,4 +1,4 @@
-import { state, getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme } from "./state.js";
+import { state, getActiveBoard, addColumn, deleteColumn, setColumnColor, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme, setColumnWipLimit } from "./state.js";
 import { commit, undo, redo } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 import { renderStats } from "./stats.js";
@@ -186,6 +186,22 @@ function handleBoardClick(e) {
             commit();
         }
 
+        return;
+    }
+
+    if (e.target.matches(".column-settings-btn")){
+        const columnEl = e.target.closest(".column");
+        const board = getActiveBoard();
+        const column = board.columns.find(c => c.id === columnEl.dataset.columnId);
+        
+        const color = prompt("Column color (hex, leave blank for none):", column.color || "");
+        setColumnColor(column, color ? color.trim() : null);
+
+        const limitInput = prompt("WIP limit (number, leave blank for none):", column.wipLimit || "");
+        const limit = limitInput ? parseInt(limitInput, 10) : null;
+        setColumnWipLimit(column, isNaN(limit) ? null : limit);
+
+        commit();
         return;
     }
 

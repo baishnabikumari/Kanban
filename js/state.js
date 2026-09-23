@@ -61,8 +61,18 @@ export function addColumn(board, title) {
   board.columns.push({
     id: generateId(),
     title,
+    color: null,
+    wipLimit: null,
     cards: []
   });
+}
+
+export function setColumnColor(column, color){
+    column.color = color || null;
+}
+
+export function setColumnWipLimit(column, limit){
+    column.wipLimit = limit || null;
 }
 
 export function deleteColumn(board, columnId) {

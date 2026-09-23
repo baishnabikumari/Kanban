@@ -30,6 +30,16 @@ export function render() {
         boardEl.appendChild(emptyEl);
     }
 
+    const filtersActive = filters.search || filters.labelId || filters.priority;
+    const totalCards = board.columns.reduce((sum, c) => sum + c.cards.length, 0);
+    const visibleCards = board.columns.reduce((sum, c) => sum + countVisible(c), 0);
+
+    if(board.columns.length && filtersActive && totalCards > 0 && visibleCards === 0){
+        const noMatchEl = document.createElement("div");
+        noMatchEl.className = "board-empty";
+        noMatchEl.textContent = "No cards match your search or filter.";
+        boardEl.appendChild(noMatchEl);
+    }
     board.columns.forEach(column => {
         boardEl.appendChild(renderColumn(column, board.labels || []));
     });
@@ -71,10 +81,21 @@ function renderLabelFilterOptions(labels){
     labelFilterEl.value = currentValue;
 }
 
+function countVisible(column){
+    return column.cards
+        .filter(card => card.title.toLowerCase().includes(filters.search))
+        .filter(card => !filters.labelId || (card.labelIds || []).includes(filters.labelId))
+        .filter(card => !filters.priority || card.priority === filters.priority)
+        .length;
+}
+
 function renderColumn(column, labels){
     const columnEl = document.createElement("div");
     columnEl.className = "column";
     columnEl.dataset.columnId = column.id;
+    if(column.color){
+        columnEl.style.borderTop = `3px solid ${column.color}`;
+    }
 
     const header = document.createElement("div");
     header.className = "column-header";
@@ -84,13 +105,21 @@ function renderColumn(column, labels){
 
     const countEl = document.createElement("span");
     countEl.className = "card-count";
-    countEl.textContent = column.cards.length;
+    countEl.textContent = column.wipLimit ? `${column.cards.length}/${column.wipLimit}` : column.cards.length;
+    if (column.wipLimit && column.cards.length > column.wipLimit) {
+        countEl.classList.add("over-limit");
+    }
 
     const headerLeft = document.createElement("div");
     headerLeft.className = "column-header-left";
 
     headerLeft.appendChild(titleEl);
     headerLeft.appendChild(countEl);
+
+    const settingsBtn = document.createElement("button");
+    settingsBtn.className = "column-settings-btn";
+    settingsBtn.textContent = "⚙️";
+    settingsBtn.title = "Column settings";
 
     const deleteColumnBtn = document.createElement("button");
     deleteColumnBtn.className = "delete-column-btn";
@@ -99,6 +128,7 @@ function renderColumn(column, labels){
     deleteColumnBtn.setAttribute("aria-label", "Delete column");
 
     header.appendChild(headerLeft);
+    header.appendChild(settingsBtn);
     header.appendChild(deleteColumnBtn);
 
     columnEl.appendChild(header);

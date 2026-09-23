@@ -5,17 +5,21 @@ const ctx = canvas.getContext("2d");
 
 export function renderStats() {
     const board = getActiveBoard();
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const totalCards = board.columns.reduce((sum, c) => sum + c.cards.length, 0);
+
+    if(!board.columns.length || !totalCards){
+        ctx.fillStyle = "#6b6862";
+        ctx.font = "13px sans-serif";
+        ctx.fillText("No data yet - add some columns and cards", 20, canvas.height / 2);
+        return;
+    }
 
     const barWidth = 40;
     const gap = 20;
     const chartHeight = 110;
-
-    const maxCount = Math.max(
-        ...board.columns.map(c => c.cards.length),
-        1
-    );
+    const maxCount = Math.max(...board.columns.map(c => c.cards.length), 1);
 
     board.columns.forEach((column, i) => {
         const barHeight = (column.cards.length / maxCount) * chartHeight;
