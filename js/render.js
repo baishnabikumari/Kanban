@@ -105,11 +105,19 @@ function renderColumn(column, labels){
 
     const cardList = document.createElement("div");
     cardList.className = "card-list";
-    column.cards
+
+    const visibleCards = column.cards
         .filter(card => card.title.toLowerCase().includes(filters.search))
         .filter(card => !filters.labelId || (card.labelIds || []).includes(filters.labelId))
         .filter(card => !filters.priority || card.priority === filters.priority)
-        .forEach(card => cardList.appendChild(renderCard(card, labels)));
+
+    if(!visibleCards.length){
+        const emptyEl = document.createElement("div");
+        emptyEl.className = "card-list-empty";
+        emptyEl.textContent = column.cards.length ? "No Matching cards" : "No cards yet";
+        cardList.appendChild(emptyEl);
+    }
+    visibleCards.forEach(card => cardList.appendChild(renderCard(card, labels)));
     columnEl.appendChild(cardList);
 
     const addCardBtn = document.createElement("button");
