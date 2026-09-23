@@ -181,9 +181,27 @@ function renderCard(card, labels) {
         });
         cardEl.appendChild(labelRow);
     }
-    const titleEl = document.createElement("div");
+    const titleRow = document.createElement("div");
+    titleRow.className = "card-title-row";
+
+    const dotEl = document.createElement("span");
+    dotEl.className = `priority-dot priority-${card.priority || "medium"}`;
+    titleRow.appendChild(dotEl);
+
+    const titleEl = document.createElement("span");
     titleEl.textContent = card.title;
     cardEl.appendChild(titleEl);
+
+    cardEl.appendChild(titleRow);
+
+    if(card.dueDate){
+        const dueEl = document.createElement("div");
+        dueEl.className = "card-due";
+        if(new Date(card.dueDate) < new Date().setHours(0, 0, 0, 0)){
+            dueEl.textContent = card.dueDate;
+            cardEl.appendChild(dueEl);
+        }
+    }
 
     if(card.checklist && card.checklist.length){
         const done = card.checklist.filter(i => i.done).length;

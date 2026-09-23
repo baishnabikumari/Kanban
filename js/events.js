@@ -9,6 +9,8 @@ const modalEl = document.getElementById("card-modal");
 const modalTitleEl = document.getElementById("modal-title");
 const cardForm = document.getElementById("card-form");
 const cardTitleInput = document.getElementById("card-title-input");
+const cardPriorityInput = document.getElementById("card-priority-input");
+const cardDueInput = document.getElementById("card-due-input");
 const cancelBtn = document.getElementById("modal-cancel-btn");
 const deleteBtn = document.getElementById("modal-delete-btn");
 const modalLabelsEl = document.getElementById("modal-labels");
@@ -221,7 +223,7 @@ function handleBoardClick(e) {
     if (e.target.matches(".add-card-btn")) {
         const columnEl = e.target.closest(".column");
 
-        openModal("add", columnEl.dataset.columnId, null, "");
+        openModal("add", columnEl.dataset.columnId, null, "", "medium", "");
 
         return;
     }
@@ -233,26 +235,24 @@ function handleBoardClick(e) {
         const found = findCard(getActiveBoard(), cardId);
 
         if (found) {
-            openModal("edit", found.column.id, cardId, found.card.title);
+            openModal("edit", found.column.id, cardId, found.card.title, found.card.priority || "medium", found.card.dueDate || "");
         }
-
         return;
     }
 }
 
-function openModal(mode, columnId, cardId, currentTitle) {
+function openModal(mode, columnId, cardId, currentTitle, currentPriority, currentDue) {
     modalMode = mode;
     modalTargetColumnId = columnId;
     modalTargetCardId = cardId;
 
     modalTitleEl.textContent = mode === "add" ? "Add card" : "Edit card";
-
     cardTitleInput.value = currentTitle;
-
+    cardPriorityInput.value = currentPriority || "medium";
+    cardDueInput.value = currentDue || "";
     deleteBtn.classList.toggle("hidden", mode !== "edit");
 
     modalEl.classList.remove("hidden");
-
     cardTitleInput.focus();
 
     renderModalLabels();
@@ -402,6 +402,8 @@ function handleFormSubmit(e) {
 
     if (!title) return;
 
+    const priority = cardPriorityInput.value;
+    const dueDate = cardDueInput.value;
     const board = getActiveBoard();
 
     if (modalMode === "add") {
@@ -409,10 +411,10 @@ function handleFormSubmit(e) {
             c => c.id === modalTargetColumnId
         );
 
-        addCard(column, title);
+        addCard(column, title, priority, dueDate);
 
     } else if (modalMode === "edit") {
-        editCard(board, modalTargetCardId, title);
+        editCard(board, modalTargetCardId, { title, priority, dueDate: dueDate || null });
     }
 
     closeModal();

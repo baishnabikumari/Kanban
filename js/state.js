@@ -87,7 +87,9 @@ export function addCard(column, title) {
     column.cards.push({
         id: generateId(),
         title,
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        priority: priority || "medium",
+        dueDate: dueDate || null
     });
 }
 
@@ -106,7 +108,7 @@ export function editCard(board, cardId, newTitle) {
     const found = findCard(board, cardId);
 
     if (found) {
-        found.card.title = newTitle;
+        Object.assign(found.card, updates);
     }
 }
 

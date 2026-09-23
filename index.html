@@ -54,6 +54,19 @@
                     <input type="text" id="card-title-input" required>
                 </label>
 
+                <label>
+                    Priority
+                    <select id="card-priority-input">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </label>
+                <label>
+                    Due date
+                    <input type="date" id="card-due-input">
+                </label>
+
                 <div class="modal-labels" id="modal-labels"></div>
                 <button type="button" id="add-label-btn" class="add-label-btn">+ label</button>
 
@@ -73,5 +86,4 @@
     </div>
     <script type="module" src="js/main.js"></script>
 </body>
-
 </html>
