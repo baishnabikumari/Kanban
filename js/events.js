@@ -1,4 +1,4 @@
-import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard } from "./state.js";
+import { getActiveBoard, addColumn, deleteColumn, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme } from "./state.js";
 import { commit } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 
@@ -20,7 +20,8 @@ const priorityFilterEl = document.getElementById("priority-filter");
 const labelFilterEl = document.getElementById("label-filter");
 const boardListEl = document.getElementById("board-list");
 const addBoardBtn = document.getElementById("add-board-btn");
- 
+const themeToggleBtn = document.getElementById("theme-toggle-btn");
+
 let modalMode = null;
 let modalTargetColumnId = null;
 let modalTargetCardId = null;
@@ -37,20 +38,49 @@ export function setupEvents() {
     labelFilterEl.addEventListener("change", () => setLabelFilter(labelFilterEl.value));
     addBoardBtn.addEventListener("click", handleAddBoard);
     boardListEl.addEventListener("click", handleBoardListClick);
+    themeToggleBtn.addEventListener("click", handleThemeToggle);
+    document.addEventListener("keydown", handleKeyDown);
 }
 
-function handleAddBoard(){
-    const name = prompt("Board name:");
-    if(!name || !name.trim()) return;
-
-    const newBoard = addBoard(name.trim());
-    setActiveBoard(newBoard.id);
+function handleThemeToggle() {
+    toggleTheme();
     commit();
 }
 
-function handleBoardListClick(e){
-    if(!e.target.matches(".board-list-item")) return;
+function handleKeyDown(e) {
+    if (e.key === "Escape" && !modalEl.classList.contains("hidden")) {
+        closeModal();
+        return;
+    }
+
+    if (e.key === "n" && modalEl.classList.contains("hidden")) {
+        if (e.target.matches("input, textarea, select")) return;
+
+        const board = getActiveBoard();
+
+        if (board.columns.length) {
+            openModal("add", board.columns[0].id, null, "");
+        }
+    }
+}
+
+function handleAddBoard() {
+    const name = prompt("Board name:");
+
+    if (!name || !name.trim()) return;
+
+    const newBoard = addBoard(name.trim());
+
+    setActiveBoard(newBoard.id);
+
+    commit();
+}
+
+function handleBoardListClick(e) {
+    if (!e.target.matches(".board-list-item")) return;
+
     setActiveBoard(e.target.dataset.boardId);
+
     commit();
 }
 
@@ -66,15 +96,16 @@ function handleBoardClick(e) {
         return;
     }
 
-    if (e.target.matches(".delete-column-btn"))  {
-        const columnE1 = e.target.closest(".column");
+    if (e.target.matches(".delete-column-btn")) {
+        const columnEl = e.target.closest(".column");
 
-        const ok = confirm("Delete this column and all its card?");
+        const ok = confirm("Delete this column and all its cards?");
 
-        if(ok) {
-            deleteColumn(getActiveBoard(), columnE1.dataset.columnId);
+        if (ok) {
+            deleteColumn(getActiveBoard(), columnEl.dataset.columnId);
             commit();
         }
+
         return;
     }
 
@@ -86,8 +117,10 @@ function handleBoardClick(e) {
         return;
     }
 
-    if (e.target.matches(".card")) {
-        const cardId = e.target.dataset.cardId;
+    const cardEl = e.target.closest(".card");
+
+    if (cardEl) {
+        const cardId = cardEl.dataset.cardId;
         const found = findCard(getActiveBoard(), cardId);
 
         if (found) {
@@ -104,58 +137,85 @@ function openModal(mode, columnId, cardId, currentTitle) {
     modalTargetCardId = cardId;
 
     modalTitleEl.textContent = mode === "add" ? "Add card" : "Edit card";
+
     cardTitleInput.value = currentTitle;
+
     deleteBtn.classList.toggle("hidden", mode !== "edit");
 
     modalEl.classList.remove("hidden");
+
     cardTitleInput.focus();
+
     renderModalLabels();
     renderModalChecklist();
 }
 
-function renderModalLabels(){
+function renderModalLabels() {
     modalLabelsEl.innerHTML = "";
-    if(modalMode !== "edit") return;
+
+    if (modalMode !== "edit") return;
 
     const board = getActiveBoard();
     const found = findCard(board, modalTargetCardId);
-    if(!found) return;
+
+    if (!found) return;
 
     board.labels.forEach(label => {
         const chip = document.createElement("button");
+
         chip.type = "button";
         chip.className = "modal-label-chip";
         chip.style.background = label.color;
-        chip.classList.toggle("active", (found.card.labelIds || []).includes(label.id));
+        chip.textContent = label.name;
+
+        chip.classList.toggle(
+            "active",
+            (found.card.labelIds || []).includes(label.id)
+        );
 
         chip.addEventListener("click", () => {
             toggleCardLabel(found.card, label.id);
+
             commit();
+
             renderModalLabels();
         });
+
         modalLabelsEl.appendChild(chip);
     });
 }
 
-function handleAddLabel(){
+function handleAddLabel() {
     const name = prompt("Label name:");
-    if(!name || !name.trim()) return;
 
-    const colors = ["#c1653d", "#5b7c99", "#7a8c5c", "#a8532f", "#8a6d9c"];
+    if (!name || !name.trim()) return;
+
+    const colors = [
+        "#c1653d",
+        "#5b7c99",
+        "#7a8c5c",
+        "#a8532f",
+        "#8a6d9c"
+    ];
+
     const color = colors[Math.floor(Math.random() * colors.length)];
 
     addLabel(getActiveBoard(), name.trim(), color);
+
     commit();
+
     renderModalLabels();
 }
 
-function renderModalChecklist(){
+function renderModalChecklist() {
     modalChecklistEl.innerHTML = "";
-    if(modalMode !== "edit") return;
+
+    if (modalMode !== "edit") return;
 
     const board = getActiveBoard();
     const found = findCard(board, modalTargetCardId);
-    if(!found) return;
+
+    if (!found) return;
 
     (found.card.checklist || []).forEach(item => {
         const row = document.createElement("div");
@@ -164,46 +224,65 @@ function renderModalChecklist(){
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = item.done;
+
         checkbox.addEventListener("change", () => {
             toggleChecklistItem(found.card, item.id);
+
             commit();
+
             renderModalChecklist();
         });
+
         const label = document.createElement("span");
         label.textContent = item.text;
-        if(item.done) label.classList.add("done");
+
+        if (item.done) {
+            label.classList.add("done");
+        }
 
         const removeBtn = document.createElement("button");
+
         removeBtn.type = "button";
         removeBtn.textContent = "x";
+
         removeBtn.addEventListener("click", () => {
             deleteChecklistItem(found.card, item.id);
+
             commit();
+
             renderModalChecklist();
         });
-        row.appendChild(checkbox)
+
+        row.appendChild(checkbox);
         row.appendChild(label);
         row.appendChild(removeBtn);
+
         modalChecklistEl.appendChild(row);
     });
 }
 
-function handleAddChecklistItem(){
+function handleAddChecklistItem() {
     const text = checklistItemInput.value.trim();
-    if(!text) return;
+
+    if (!text) return;
 
     const board = getActiveBoard();
     const found = findCard(board, modalTargetCardId);
-    if(!found) return;
+
+    if (!found) return;
 
     addChecklistItem(found.card, text);
+
     checklistItemInput.value = "";
+
     commit();
+
     renderModalChecklist();
 }
 
-function closeModal(){
+function closeModal() {
     modalEl.classList.add("hidden");
+
     cardForm.reset();
 }
 
@@ -217,7 +296,9 @@ function handleFormSubmit(e) {
     const board = getActiveBoard();
 
     if (modalMode === "add") {
-        const column = board.columns.find(c => c.id === modalTargetColumnId);
+        const column = board.columns.find(
+            c => c.id === modalTargetColumnId
+        );
 
         addCard(column, title);
     } else if (modalMode === "edit") {
@@ -230,11 +311,13 @@ function handleFormSubmit(e) {
 }
 
 function handleDeleteCard() {
-    const ok = confirm("Delete this Card?");
+    const ok = confirm("Delete this card?");
 
-    if(ok) {
+    if (ok) {
         deleteCard(getActiveBoard(), modalTargetCardId);
+
         closeModal();
+
         commit();
     }
 }

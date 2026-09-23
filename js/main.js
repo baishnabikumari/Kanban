@@ -15,6 +15,11 @@ setupEvents();
 
 export function commit() {
     saveState(state);
+    applytheme();
     render();
 }
 setupDragDrop();
+
+function applytheme(){
+    document.documentElement.dataset.theme = state.theme || "Light";
+}

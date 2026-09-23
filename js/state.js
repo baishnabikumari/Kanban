@@ -2,6 +2,7 @@ import { generateId } from "./utils.js";
 
 export const state = {
     activeBoardId: "b1",
+    theme: "Light",
     boards: [
         {
             id: "b1",
@@ -147,3 +148,8 @@ export function toggleChecklistItem(card, itemId){
 export function deleteChecklistItem(card, itemId){
     card.checklist = (card.checklist || []).filter(i => i.id !== itemId);
 }
+
+export function toggleTheme(){
+    state.theme = state.theme === "dark" ? "light" : "dark";
+}
+

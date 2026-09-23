@@ -58,7 +58,7 @@ body {
 }
 
 .card{
-    background: #fff;
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     padding: var(--gap-sm) var(--gap-md);
@@ -103,7 +103,7 @@ body {
 }
 
 .modal-content {
-    background: #fff;
+    background: var(--color-surface);
     border-radius: var(--radius);
     padding: var(--gap-lg);
     width: 320px;
