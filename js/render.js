@@ -23,6 +23,13 @@ export function render() {
 
     boardEl.innerHTML = "";
 
+    if (!board.columns.length){
+        const emptyEl = document.createElement("div");
+        emptyEl.className = "board-empty";
+        emptyEl.textContent = "This board has no colms yet - add one to start.";
+        boardEl.appendChild(emptyEl);
+    }
+
     board.columns.forEach(column => {
         boardEl.appendChild(renderColumn(column, board.labels || []));
     });
