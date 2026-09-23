@@ -460,3 +460,10 @@ body {
 .label-chip {
     width: 20px;
 }
+
+.drop-placeholder {
+    height: 40px;
+    border: 2px dashed var(--color-accent);
+    border-radius: var(--radius);
+    background: rgba(193, 101, 61, 0.08);
+}
