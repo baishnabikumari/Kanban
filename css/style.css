@@ -522,3 +522,37 @@ body {
 .board-list-item {
     transition: background 0.12s ease;
 }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+.card:focus-visible,
+.board-list-item:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+@media (max-width: 700px) {
+    .header-controls {
+        gap: 4px;
+    }
+
+    .search-input {
+        width: 140px;
+    }
+
+    .header-controls select {
+        font-size: 0.75rem;
+        padding: 4px 6px;
+    }
+
+    .header-controls button {
+        font-size: 0.75rem;
+        padding: 4px 6px;
+    }
+
+    .modal-content {
+        width: 90vw;
+        max-width: 360px;
+    }
+}
