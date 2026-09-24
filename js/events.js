@@ -1,4 +1,4 @@
-import { state, getActiveBoard, addColumn, deleteColumn, setColumnColor, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, setActiveBoard, toggleTheme, setColumnWipLimit } from "./state.js";
+import { state, getActiveBoard, addColumn, deleteColumn, setColumnColor, setColumnWipLimit, addCard, editCard, deleteCard, findCard, addLabel, toggleCardLabel, toggleChecklistItem, deleteChecklistItem, addChecklistItem, addBoard, renameBoard, deleteBoard, setActiveBoard, toggleTheme } from "./state.js";
 import { commit, undo, redo } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 import { renderStats } from "./stats.js";
@@ -51,7 +51,6 @@ export function setupEvents() {
     boardListEl.addEventListener("click", handleBoardListClick);
     themeToggleBtn.addEventListener("click", handleThemeToggle);
     statsToggleBtn.addEventListener("click", handleStatsToggle);
-
     exportBtn.addEventListener("click", handleExport);
     importBtn.addEventListener("click", () => importInput.click());
     importInput.addEventListener("change", handleImport);
@@ -127,6 +126,7 @@ function handleStatsToggle() {
 
 function handleThemeToggle() {
     toggleTheme();
+
     commit();
 }
 
@@ -136,13 +136,13 @@ function handleKeyDown(e) {
         return;
     }
 
-    if((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey){
+    if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
         e.preventDefault();
         undo();
         return;
     }
 
-    if((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.key === "z" && e.shiftKey))){
+    if ((e.ctrlKey || e.metaKey) && (e.key === "y" || (e.key === "z" && e.shiftKey))) {
         e.preventDefault();
         redo();
         return;
@@ -153,8 +153,8 @@ function handleKeyDown(e) {
 
         const board = getActiveBoard();
 
-        if (board.columns.length) {
-            openModal("add", board.columns[0].id, null, "");
+        if (board && board.columns.length) {
+            openModal("add", board.columns[0].id, null, "", "medium", "");
         }
     }
 }
@@ -172,9 +172,48 @@ function handleAddBoard() {
 }
 
 function handleBoardListClick(e) {
-    if (!e.target.matches(".board-list-item")) return;
+    if (e.target.matches(".board-rename-btn")) {
+        const item = e.target.closest(".board-list-item");
 
-    setActiveBoard(e.target.dataset.boardId);
+        const board = state.boards.find(
+            b => b.id === item.dataset.boardId
+        );
+
+        if (!board) return;
+
+        const name = prompt("Board name:", board.name);
+
+        if (name && name.trim()) {
+            renameBoard(board, name.trim());
+            commit();
+        }
+
+        return;
+    }
+
+    if (e.target.matches(".board-delete-btn")) {
+        const item = e.target.closest(".board-list-item");
+
+        if (state.boards.length <= 1) {
+            alert("You need at least one board.");
+            return;
+        }
+
+        const ok = confirm("Delete this board and everything on it?");
+
+        if (ok) {
+            deleteBoard(item.dataset.boardId);
+            commit();
+        }
+
+        return;
+    }
+
+    const item = e.target.closest(".board-list-item");
+
+    if (!item) return;
+
+    setActiveBoard(item.dataset.boardId);
 
     commit();
 }
@@ -191,19 +230,33 @@ function handleBoardClick(e) {
         return;
     }
 
-    if (e.target.matches(".column-settings-btn")){
+    if (e.target.matches(".column-settings-btn")) {
         const columnEl = e.target.closest(".column");
+
         const board = getActiveBoard();
-        const column = board.columns.find(c => c.id === columnEl.dataset.columnId);
-        
-        const color = prompt("Column color (hex, leave blank for none):", column.color || "");
+
+        const column = board.columns.find(
+            c => c.id === columnEl.dataset.columnId
+        );
+
+        const color = prompt(
+            "Column color (hex, leave blank for none):",
+            column.color || ""
+        );
+
         setColumnColor(column, color ? color.trim() : null);
 
-        const limitInput = prompt("WIP limit (number, leave blank for none):", column.wipLimit || "");
+        const limitInput = prompt(
+            "WIP limit (number, leave blank for none):",
+            column.wipLimit || ""
+        );
+
         const limit = limitInput ? parseInt(limitInput, 10) : null;
+
         setColumnWipLimit(column, isNaN(limit) ? null : limit);
 
         commit();
+
         return;
     }
 
@@ -223,7 +276,14 @@ function handleBoardClick(e) {
     if (e.target.matches(".add-card-btn")) {
         const columnEl = e.target.closest(".column");
 
-        openModal("add", columnEl.dataset.columnId, null, "", "medium", "");
+        openModal(
+            "add",
+            columnEl.dataset.columnId,
+            null,
+            "",
+            "medium",
+            ""
+        );
 
         return;
     }
@@ -232,11 +292,20 @@ function handleBoardClick(e) {
 
     if (cardEl) {
         const cardId = cardEl.dataset.cardId;
+
         const found = findCard(getActiveBoard(), cardId);
 
         if (found) {
-            openModal("edit", found.column.id, cardId, found.card.title, found.card.priority || "medium", found.card.dueDate || "");
+            openModal(
+                "edit",
+                found.column.id,
+                cardId,
+                found.card.title,
+                found.card.priority || "medium",
+                found.card.dueDate || ""
+            );
         }
+
         return;
     }
 }
@@ -247,12 +316,15 @@ function openModal(mode, columnId, cardId, currentTitle, currentPriority, curren
     modalTargetCardId = cardId;
 
     modalTitleEl.textContent = mode === "add" ? "Add card" : "Edit card";
+
     cardTitleInput.value = currentTitle;
     cardPriorityInput.value = currentPriority || "medium";
     cardDueInput.value = currentDue || "";
+
     deleteBtn.classList.toggle("hidden", mode !== "edit");
 
     modalEl.classList.remove("hidden");
+
     cardTitleInput.focus();
 
     renderModalLabels();
@@ -265,6 +337,7 @@ function renderModalLabels() {
     if (modalMode !== "edit") return;
 
     const board = getActiveBoard();
+
     const found = findCard(board, modalTargetCardId);
 
     if (!found) return;
@@ -322,15 +395,18 @@ function renderModalChecklist() {
     if (modalMode !== "edit") return;
 
     const board = getActiveBoard();
+
     const found = findCard(board, modalTargetCardId);
 
     if (!found) return;
 
     (found.card.checklist || []).forEach(item => {
         const row = document.createElement("div");
+
         row.className = "checklist-item";
 
         const checkbox = document.createElement("input");
+
         checkbox.type = "checkbox";
         checkbox.checked = item.done;
 
@@ -343,6 +419,7 @@ function renderModalChecklist() {
         });
 
         const label = document.createElement("span");
+
         label.textContent = item.text;
 
         if (item.done) {
@@ -376,6 +453,7 @@ function handleAddChecklistItem() {
     if (!text) return;
 
     const board = getActiveBoard();
+
     const found = findCard(board, modalTargetCardId);
 
     if (!found) return;
@@ -404,6 +482,7 @@ function handleFormSubmit(e) {
 
     const priority = cardPriorityInput.value;
     const dueDate = cardDueInput.value;
+
     const board = getActiveBoard();
 
     if (modalMode === "add") {
@@ -414,7 +493,11 @@ function handleFormSubmit(e) {
         addCard(column, title, priority, dueDate);
 
     } else if (modalMode === "edit") {
-        editCard(board, modalTargetCardId, { title, priority, dueDate: dueDate || null });
+        editCard(board, modalTargetCardId, {
+            title,
+            priority,
+            dueDate: dueDate || null
+        });
     }
 
     closeModal();

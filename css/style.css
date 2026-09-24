@@ -384,21 +384,21 @@ body {
     }
 }
 
-.card{
-    box-shadow: 0 1px 2px rgba(28,28,26,0.06);
+.card {
+    box-shadow: 0 1px 2px rgba(28, 28, 26, 0.06);
     transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.card:hover{
-    box-shadow: 0 3px 8px rgba(28,28,26,0.1);
+.card:hover {
+    box-shadow: 0 3px 8px rgba(28, 28, 26, 0.1);
     transform: translateY(-1px);
 }
 
-.card.dragging{
+.card.dragging {
     cursor: grabbing;
 }
 
-.card-list-empty{
+.card-list-empty {
     color: var(--color-text-muted);
     font-size: 0.8rem;
     padding: var(--gap-sm);
@@ -406,53 +406,53 @@ body {
     font-style: italic;
 }
 
-.column-settings-btn{
+.column-settings-btn {
     color: var(--color-text-muted);
     font-size: 0.85rem;
     padding: 0 4px;
 }
 
-.column-settings-btn:hover{
+.column-settings-btn:hover {
     color: var(--color-accent);
 }
 
-.card-count.over-limit{
+.card-count.over-limit {
     color: #b3402c;
     font-weight: 700;
 }
 
-.card-title-row{
+.card-title-row {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.priority-dot{
+.priority-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-.priority-low{
+.priority-low {
     background: var(--color-border);
 }
 
-.priority-medium{
+.priority-medium {
     background: #b08a4e;
 }
 
-.priority-high{
+.priority-high {
     background: #b3402c;
 }
 
-.card-due{
+.card-due {
     font-size: 0.75rem;
     color: var(--color-text-muted);
     margin-top: 4px;
 }
 
-.card-due.overdue{
+.card-due.overdue {
     color: #b3402c;
     font-weight: 600;
 }
@@ -466,4 +466,39 @@ body {
     border: 2px dashed var(--color-accent);
     border-radius: var(--radius);
     background: rgba(193, 101, 61, 0.08);
+}
+
+.board-list-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.board-list-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.board-rename-btn,
+.board-delete-btn {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    opacity: 0;
+    transition: opacity 0.1s ease, color 0.1s ease;
+    padding: 2px;
+}
+
+.board-list-item:hover .board-rename-btn,
+.board-list-item:hover .board-delete-btn {
+    opacity: 1;
+}
+
+.board-rename-btn:hover {
+    color: var(--color-accent);
+}
+
+.board-delete-btn:hover {
+    color: #b3402c;
 }

@@ -12,25 +12,31 @@ export const state = {
                 {
                     id: "c1",
                     title: "To Do",
+                    color: null,
+                    wipLimit: null,
                     cards: [
-                        { id: "k1", title: "Fix login bug on mobile" },
-                        { id: "k2", title: "Write unit tests for auth module" },
-                        { id: "k3", title: "Update favicon" }
+                        { id: "k1", title: "Fix login bug on mobile", priority: "medium", dueDate: null },
+                        { id: "k2", title: "Write unit tests for auth module", priority: "medium", dueDate: null },
+                        { id: "k3", title: "Update favicon", priority: "medium", dueDate: null }
                     ]
                 },
                 {
                     id: "c2",
                     title: "In Progress",
+                    color: null,
+                    wipLimit: null,
                     cards: [
-                        { id: "k4", title: "Redesign landing page hero" },
-                        { id: "k5", title: "Set up CI pipeline"}
+                        { id: "k4", title: "Redesign landing page hero", priority: "medium", dueDate: null },
+                        { id: "k5", title: "Set up CI pipeline", priority: "medium", dueDate: null }
                     ]
                 },
                 {
                     id: "c3",
                     title: "Done",
+                    color: null,
+                    wipLimit: null,
                     cards: [
-                        { id: "k6", title: "Initial project setup" }
+                        { id: "k6", title: "Initial project setup", priority: "medium", dueDate: null }
                     ]
                 }
             ]
@@ -45,8 +51,28 @@ export function addBoard(name){
         labels: [],
         columns: []
     };
+
     state.boards.push(newBoard);
-    return newBoard
+
+    return newBoard;
+}
+
+export function renameBoard(board, name){
+    board.name = name;
+}
+
+export function deleteBoard(boardId){
+    const idx = state.boards.findIndex(b => b.id === boardId);
+
+    if(idx === -1) return;
+
+    state.boards.splice(idx, 1);
+
+    if(state.activeBoardId === boardId){
+        state.activeBoardId = state.boards.length
+            ? state.boards[0].id
+            : null;
+    }
 }
 
 export function setActiveBoard(boardId){
@@ -58,13 +84,13 @@ export function getActiveBoard(){
 }
 
 export function addColumn(board, title) {
-  board.columns.push({
-    id: generateId(),
-    title,
-    color: null,
-    wipLimit: null,
-    cards: []
-  });
+    board.columns.push({
+        id: generateId(),
+        title,
+        color: null,
+        wipLimit: null,
+        cards: []
+    });
 }
 
 export function setColumnColor(column, color){
@@ -83,7 +109,7 @@ export function deleteColumn(board, columnId) {
     }
 }
 
-export function addCard(column, title) {
+export function addCard(column, title, priority, dueDate) {
     column.cards.push({
         id: generateId(),
         title,
@@ -101,10 +127,11 @@ export function findCard(board, cardId) {
             return { card, column };
         }
     }
+
     return null;
 }
 
-export function editCard(board, cardId, newTitle) {
+export function editCard(board, cardId, updates) {
     const found = findCard(board, cardId);
 
     if (found) {
@@ -118,17 +145,23 @@ export function deleteCard(board, cardId) {
 
         if (idx !== -1) {
             column.cards.splice(idx, 1);
-            
         }
     }
 }
+
 export function addLabel(board, name, color){
-    board.labels.push({ id: generateId(), name, color });
+    board.labels.push({
+        id: generateId(),
+        name,
+        color
+    });
 }
 
 export function toggleCardLabel(card, labelId){
     card.labelIds = card.labelIds || [];
+
     const idx = card.labelIds.indexOf(labelId);
+
     if(idx === -1){
         card.labelIds.push(labelId);
     } else {
@@ -138,23 +171,34 @@ export function toggleCardLabel(card, labelId){
 
 export function moveCard(board, cardId, targetColumnId, targetIndex){
     const found = findCard(board, cardId);
+
     if(!found) return;
 
     const sourceIndex = found.column.cards.findIndex(c => c.id === cardId);
+
     found.column.cards.splice(sourceIndex, 1);
 
     const targetColumn = board.columns.find(c => c.id === targetColumnId);
+
     targetColumn.cards.splice(targetIndex, 0, found.card);
 }
 
 export function addChecklistItem(card, text){
     card.checklist = card.checklist || [];
-    card.checklist.push({ id: generateId(), text, done: false });
+
+    card.checklist.push({
+        id: generateId(),
+        text,
+        done: false
+    });
 }
 
 export function toggleChecklistItem(card, itemId){
     const item = (card.checklist || []).find(i => i.id === itemId);
-    if(item) item.done = !item.done;
+
+    if(item) {
+        item.done = !item.done;
+    }
 }
 
 export function deleteChecklistItem(card, itemId){
@@ -164,4 +208,3 @@ export function deleteChecklistItem(card, itemId){
 export function toggleTheme(){
     state.theme = state.theme === "dark" ? "light" : "dark";
 }
-
