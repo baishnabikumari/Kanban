@@ -1,7 +1,14 @@
+html, body{
+    height: 100%;
+}
+
 body {
     font-family: var(--font-main);
     background: var(--color-bg);
     color: var(--color-text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .app-header {
@@ -184,11 +191,14 @@ body {
     color: var(--color-text-muted);
     font-size: 1rem;
     line-height: 1;
-    padding: 0 4px;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 .delete-column-btn:hover {
     color: #b3402c;
+    background: var(--color-bg);
+    border-radius: 4px;
 }
 
 .delete-btn {
@@ -303,7 +313,20 @@ body {
 
 .header-controls {
     display: flex;
+    align-items: center;
     gap: var(--gap-sm);
+}
+
+.header-group{
+    display: flex;
+    align-items: center;
+    gap: var(--gap-sm);
+}
+
+.header-divider{
+    width: 1px;
+    height: 20px;
+    background: var(--color-border);
 }
 
 .header-controls select {
@@ -313,9 +336,26 @@ body {
     font-size: 0.85rem;
 }
 
+.header-controls button{
+    padding: 6px 10px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    min-width: 32px;
+    text-align: center
+}
+
+.header-controls button:hover{
+    color: var(--color-accent);
+    border-color: var(--color-accent)
+}
+
 .app-body {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
+    flex: 1;
+    min-height: 0;
 }
 
 .sidebar {
@@ -340,15 +380,24 @@ body {
 .board-list-item.active {
     background: var(--color-bg-alt);
     font-weight: 600;
+    border-left: 3px solid var(--color-accent);
+    padding-left: calc(--gap-sm) - 3px;
 }
 
 .add-board-btn {
     font-size: 0.8rem;
     color: var(--color-text-muted);
+    padding: var(--gap-sm);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius);
+    width: 100%;
+    text-align: left;
+    margin-top: var(--gap-sm);
 }
 
 .add-board-btn:hover {
     color: var(--color-accent);
+    border-color: var(--color-accent);
 }
 
 .stats-panel {
@@ -415,11 +464,14 @@ body {
 .column-settings-btn {
     color: var(--color-text-muted);
     font-size: 0.85rem;
-    padding: 0 4px;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 .column-settings-btn:hover {
     color: var(--color-accent);
+    background: var(--color-bg);
+    border-radius: 4px;
 }
 
 .card-count.over-limit {
@@ -555,4 +607,22 @@ select:focus-visible,
         width: 90vw;
         max-width: 360px;
     }
+}
+
+.board{
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.board::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+.board::-webkit-scrollbar-thumb{
+    background: var(--color-text-muted);
+    border-radius: 4px;
+}
+
+.board::-webkit-scrollbar-thumb:hover{
+    background: var(--color-text-muted);
 }

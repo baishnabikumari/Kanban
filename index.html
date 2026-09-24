@@ -14,23 +14,34 @@
     <header class="app-header">
         <h1>Kanban</h1>
         <div class="header-controls">
-            <input type="text" id="search-input" class="search-input" placeholder="Search Cards...">
-            <select id="priority-filter">
-                <option value="">All priorities</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-            </select>
-            <select id="label-filter">
-                <option value="">All labels</option>
-            </select>
-            <button type="button" id="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
-            <button type="button" id="stats-toggle-btn">📊 Stats</button>
-            <button type="button" id="undo-btn">Undo</button>
-            <button type="button" id="redo-btn">Redo</button>
-            <button type="button" id="export-btn">Export</button>
-            <button type="button" id="import-btn">Import</button>
-            <input type="file" id="import-input" accept="application/json" style="display:none">
+            <div class="header-group">
+                <input type="text" id="search-input" class="search-input" placeholder="Search Cards...">
+                <select id="priority-filter">
+                    <option value="">All priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <select id="label-filter">
+                    <option value="">All labels</option>
+                </select>
+            </div>
+            <span class="header-divider"></span>
+            <div class="header-group">
+                <button type="button" id="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+                <button type="button" id="stats-toggle-btn"> Stats</button>
+            </div>
+            <span class="header-divider"></span>
+            <div class="header-group">
+                <button type="button" id="undo-btn">Undo</button>
+                <button type="button" id="redo-btn">Redo</button>
+            </div>
+            <span class="header-divider"></span>
+            <div class="header-group">
+                <button type="button" id="export-btn">Export</button>
+                <button type="button" id="import-btn">Import</button>
+                <input type="file" id="import-input" accept="application/json" style="display:none">
+            </div>
 
         </div>
     </header>
@@ -86,4 +97,5 @@
     </div>
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

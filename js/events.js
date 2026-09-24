@@ -429,7 +429,7 @@ function renderModalChecklist() {
         const removeBtn = document.createElement("button");
 
         removeBtn.type = "button";
-        removeBtn.textContent = "x";
+        removeBtn.textContent = "×";
 
         removeBtn.addEventListener("click", () => {
             deleteChecklistItem(found.card, item.id);
