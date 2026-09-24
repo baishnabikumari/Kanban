@@ -109,10 +109,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
-.modal.hidden {
-    display: none;
+.modal:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal-content {
@@ -120,6 +124,8 @@ body {
     border-radius: var(--radius);
     padding: var(--gap-lg);
     width: 320px;
+    transform: scale(0.96);
+    transition: transform 0.15s ease;
 }
 
 .modal-content h3 {
@@ -501,4 +507,18 @@ body {
 
 .board-delete-btn:hover {
     color: #b3402c;
+}
+
+.modal:not(.hidden) .modal-content {
+    transform: scale(1);
+}
+
+.header-controls select,
+.header-controls button,
+.search-input {
+    transition: border-color 0.12s ease, color 0.12s ease;
+}
+
+.board-list-item {
+    transition: background 0.12s ease;
 }
