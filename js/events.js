@@ -2,6 +2,7 @@ import { state, getActiveBoard, addColumn, deleteColumn, setColumnColor, setColu
 import { commit, undo, redo } from "./main.js";
 import { setSearchFilter, setLabelFilter, setPriorityFilter } from "./render.js";
 import { renderStats } from "./stats.js";
+import { openPrompt, openConfirm} from "./dialog.js";
 
 const boardEl = document.getElementById("board");
 
@@ -159,8 +160,8 @@ function handleKeyDown(e) {
     }
 }
 
-function handleAddBoard() {
-    const name = prompt("Board name:");
+ async function handleAddBoard() {
+    const name = openPrompt("Board name:");
 
     if (!name || !name.trim()) return;
 
@@ -218,9 +219,9 @@ function handleBoardListClick(e) {
     commit();
 }
 
-function handleBoardClick(e) {
+async function handleBoardClick(e) {
     if (e.target.matches(".add-column-btn")) {
-        const title = prompt("Column name:");
+        const title = await openPrompt("Column name:");
 
         if (title && title.trim()) {
             addColumn(getActiveBoard(), title.trim());
@@ -239,12 +240,15 @@ function handleBoardClick(e) {
             c => c.id === columnEl.dataset.columnId
         );
 
-        const color = prompt(
+        const color = await openPrompt(
             "Column color (hex, leave blank for none):",
             column.color || ""
         );
 
-        setColumnColor(column, color ? color.trim() : null);
+        if (color === null) return;
+
+
+        setColumnColor(column, color.trim() ||  null);
 
         const limitInput = prompt(
             "WIP limit (number, leave blank for none):",
@@ -263,7 +267,7 @@ function handleBoardClick(e) {
     if (e.target.matches(".delete-column-btn")) {
         const columnEl = e.target.closest(".column");
 
-        const ok = confirm("Delete this column and all its cards?");
+        const ok = await openConfirm("Delete this column and all its cards?");
 
         if (ok) {
             deleteColumn(getActiveBoard(), columnEl.dataset.columnId);
