@@ -183,6 +183,14 @@ export function moveCard(board, cardId, targetColumnId, targetIndex){
     targetColumn.cards.splice(targetIndex, 0, found.card);
 }
 
+export function reorderColumn(board, columnId, targetIndex) {
+    const fromIndex = board.columns.findIndex(c => c.id === columnId);
+    if (fromIndex === -1) return;
+
+    const [column] = board.columns.splice(fromIndex, 1);
+    board.columns.splice(targetIndex, 0, column);
+}
+
 export function addChecklistItem(card, text){
     card.checklist = card.checklist || [];
 

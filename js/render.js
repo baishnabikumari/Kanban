@@ -139,6 +139,7 @@ function renderColumn(column, labels){
 
     columnEl.className = "column";
     columnEl.dataset.columnId = column.id;
+    columnEl.draggable = true;
 
     if(column.color){
         columnEl.style.borderTop = `3px solid ${column.color}`;

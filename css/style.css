@@ -667,3 +667,12 @@ select:focus-visible,
 #dialog-cancel-btn {
     color: var(--color-text-muted);
 }
+
+.column {
+    cursor: grab;
+}
+
+.column.dragging-column {
+    opacity: 0.4;
+    cursor: grabbing;
+}

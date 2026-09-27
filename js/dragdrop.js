@@ -1,10 +1,14 @@
-import { getActiveBoard, moveCard } from "./state.js";
+
+import { getActiveBoard, moveCard, reorderColumn } from "./state.js";
 import { commit } from "./main.js";
 
 const boardEl = document.getElementById("board");
 
 let draggedCardId = null;
-let draggedEl = null;
+let draggedCardEl = null;
+
+let draggedColumnId = null;
+let draggedColumnEl = null;
 
 export function setupDragDrop(){
     boardEl.addEventListener("dragstart", handleDragStart);
@@ -14,70 +18,89 @@ export function setupDragDrop(){
 }
 
 function handleDragStart(e){
-    if(!e.target.matches(".card")) return;
+    if (e.target.matches(".card")) {
+        draggedCardId = e.target.dataset.cardId;
+        draggedCardEl = e.target;
+        draggedCardEl.classList.add("dragging");
+        return;
+    }
 
-    draggedCardId = e.target.dataset.cardId;
-    draggedEl = e.target;
-
-    draggedEl.classList.add("dragging");
+    if (e.target.matches(".column")) {
+        draggedColumnId = e.target.dataset.columnId;
+        draggedColumnEl = e.target;
+        draggedColumnEl.classList.add("dragging-column");
+    }
 }
 
 function handleDragEnd(){
-    if(draggedEl) draggedEl.classList.remove("dragging");
-
+    if (draggedCardEl) draggedCardEl.classList.remove("dragging");
     draggedCardId = null;
-    draggedEl = null;
+    draggedCardEl = null;
+
+    if (draggedColumnEl) draggedColumnEl.classList.remove("dragging-column");
+    draggedColumnId = null;
+    draggedColumnEl = null;
 
     clearPlaceholders();
 }
 
 function handleDragOver(e){
-    const cardList = e.target.closest(".card-list");
+    if (draggedCardId) {
+        const cardList = e.target.closest(".card-list");
+        if (!cardList) return;
+        e.preventDefault();
+        showPlaceholder(cardList, e.clientY);
+        return;
+    }
 
-    if(!cardList) return;
-
-    e.preventDefault();
-
-    showPlaceholder(cardList, e.clientY);
+    if (draggedColumnId) {
+        if (!e.target.closest(".board")) return;
+        e.preventDefault();
+    }
 }
 
 function handleDrop(e){
-    const cardList = e.target.closest(".card-list");
+    if (draggedCardId) {
+        const cardList = e.target.closest(".card-list");
+        if (!cardList) return;
+        e.preventDefault();
 
-    if(!cardList || !draggedCardId) return;
+        const columnEl = cardList.closest(".column");
+        const targetColumnId = columnEl.dataset.columnId;
 
-    e.preventDefault();
+        const siblingCards = [...cardList.querySelectorAll(".card:not(.dragging)")];
+        const afterEl = getDragAfterElement(cardList, e.clientY);
+        const targetIndex = afterEl ? siblingCards.indexOf(afterEl) : siblingCards.length;
 
-    const columnEl = cardList.closest(".column");
-    const targetColumnId = columnEl.dataset.columnId;
+        moveCard(getActiveBoard(), draggedCardId, targetColumnId, targetIndex);
+        clearPlaceholders();
+        commit();
+        return;
+    }
 
-    const siblingCards = [...cardList.querySelectorAll(".card:not(.dragging)")];
+    if (draggedColumnId) {
+        if (!e.target.closest(".board")) return;
+        e.preventDefault();
 
-    const afterEl = getDragAfterElement(cardList, e.clientY);
+        const board = getActiveBoard();
+        const afterEl = getColumnAfterElement(e.clientX);
+        const siblingColumns = [...boardEl.querySelectorAll(".column:not(.dragging-column)")];
+        const targetIndex = afterEl ? siblingColumns.indexOf(afterEl) : siblingColumns.length;
 
-    const targetIndex = afterEl
-        ? siblingCards.indexOf(afterEl)
-        : siblingCards.length;
-
-    moveCard(getActiveBoard(), draggedCardId, targetColumnId, targetIndex);
-
-    clearPlaceholders();
-
-    commit();
+        reorderColumn(board, draggedColumnId, targetIndex);
+        commit();
+    }
 }
 
 function showPlaceholder(cardList, y){
     let placeholder = cardList.querySelector(".drop-placeholder");
-
     if(!placeholder){
         clearPlaceholders();
-
         placeholder = document.createElement("div");
         placeholder.className = "drop-placeholder";
     }
 
     const afterEl = getDragAfterElement(cardList, y);
-
     if(afterEl){
         cardList.insertBefore(placeholder, afterEl);
     } else {
@@ -99,8 +122,20 @@ function getDragAfterElement(cardList, y) {
         if (offset < 0 && offset > closest.offset) {
             return { offset, element: card };
         }
-
         return closest;
+    }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+}
 
+function getColumnAfterElement(x) {
+    const columns = [...boardEl.querySelectorAll(".column:not(.dragging-column)")];
+
+    return columns.reduce((closest, col) => {
+        const box = col.getBoundingClientRect();
+        const offset = x - box.left - box.width / 2;
+
+        if (offset < 0 && offset > closest.offset) {
+            return { offset, element: col };
+        }
+        return closest;
     }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
 }
